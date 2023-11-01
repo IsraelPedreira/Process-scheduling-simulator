@@ -1,0 +1,17 @@
+.gantt-bar {
+  background-color: #0074d9;
+  color: white;
+  padding: 5px;
+  margin: 5px;
+  width: 0; /* Initialize width to 0 */
+  animation: growWidth 1s ease forwards; /* Use CSS animation */
+}
+
+@keyframes growWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%; /* Set the width to 100% at the end of the animation */
+  }
+}
