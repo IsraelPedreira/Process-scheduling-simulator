@@ -10,10 +10,12 @@ const App = () => {
   // ]);
 	const [tasks, setTasks] = useState([]);
   const addTask = () => {
+		const randomWidth = Math.floor(Math.random() * 60 + 20)
+		console.log(randomWidth) // FIX remove
     const newTask = {
       id: tasks.length + 1,
       name: `Task ${tasks.length + 1}`,
-      duration: '40%',
+      duration: randomWidth // random duration 20-80 (TOTAL RANGE: 0-100)
     };
     setTasks([...tasks, newTask]);
   };

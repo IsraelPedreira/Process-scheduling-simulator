@@ -1,17 +1,30 @@
+#root {
+	width: 90%;
+}
+
 .gantt-bar {
   background-color: #0074d9;
   color: white;
   padding: 5px;
   margin: 5px;
-  width: 0; /* Initialize width to 0 */
-  animation: growWidth 1s ease forwards; /* Use CSS animation */
 }
 
-@keyframes growWidth {
+/* animation handling code */
+/* see http://reactcommunity.org/react-transition-group/css-transition */
+
+.gantt-bar-enter {
+	width: 0;
+}
+
+.gantt-bar-exit {
+	width: 100%; /* grow to (relative) width of 100% of parent container */
+}
+
+@keyframes progress {
   from {
-    width: 0;
+	width: 0;
   }
   to {
-    width: 100%; /* Set the width to 100% at the end of the animation */
+	width: 100%; /* grow to (relative) width of 100% of parent container */
   }
 }
