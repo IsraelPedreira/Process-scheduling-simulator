@@ -24,7 +24,7 @@ function generateRandomProcessData(count, maxArrivalTime=10, maxDuration=5, maxD
 }
 
 // Generate 5 random processes
-// const processData = generateRandomProcessData(5);
+const processData = generateRandomProcessData(5);
 
 // const processData =
 // [
@@ -34,16 +34,16 @@ function generateRandomProcessData(count, maxArrivalTime=10, maxDuration=5, maxD
 //   { PID: 4, arrivalTime: 0, duration: 5, deadline: 16, priority: 2 },
 //   { PID: 5, arrivalTime: 5, duration: 2, deadline: 1, priority: 3 }
 // ]
-const processData = 
-[
-  { pid: 1, arrival_time: 4, duration: 3, priority: 3, deadline: 8 },
-  { pid: 2, arrival_time: 0, duration: 3, priority: 3, deadline: 19 },
-  { pid: 3, arrival_time: 9, duration: 2, priority: 0, deadline: 15 },
-  { pid: 4, arrival_time: 3, duration: 1, priority: 3, deadline: 13 },
-  { pid: 5, arrival_time: 2, duration: 5, priority: 3, deadline: 4 }
-]
+// const processData =
+// [
+//   { pid: 1, arrival_time: 4, duration: 3, priority: 3, deadline: 8 },
+//   { pid: 2, arrival_time: 0, duration: 3, priority: 3, deadline: 19 },
+//   { pid: 3, arrival_time: 9, duration: 2, priority: 0, deadline: 15 },
+//   { pid: 4, arrival_time: 3, duration: 1, priority: 3, deadline: 13 },
+//   { pid: 5, arrival_time: 2, duration: 5, priority: 3, deadline: 4 }
+// ]
 
-console.log(processData);
+console.log("process raw data", processData);
 
 // Add each process to the process table
 processData.forEach((process) => {
