@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import { GanttBuilder, ProcessForm } from './App.jsx'
 import './index.css'
+import './entry.css'
 import './GanttChart.css'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
+function App() {
+  return (
+		<div className="entry" style={{width: "50%", left: 0}}>
+			<div className="entry-form">
+				<div className="entry-header">
+					<h1>Process Form App</h1>
+				</div>
+				<ProcessForm /> {/* Render the ProcessForm component here */}
+			</div>
+			<div className="entry-view">
+			</div>
+		</div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('entry-root')).render(
     <App />
-  // </React.StrictMode>,
 )

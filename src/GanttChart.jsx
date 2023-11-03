@@ -11,8 +11,12 @@ const GanttChart = ({ tasks }) => {
     <div className="gantt-container">
       <TransitionGroup>
         {tasks.map((task) => (
-			<div key={task.id} style={{width: `${task.duration}%`}}>
-			  <CSSTransition timeout={10000} classNames="task">
+			<div key={task.id} style={{
+				position: "relative",
+				width: `${task.duration}%`,
+				left: `${task.arrival_time}%`,
+			}}>
+			  <CSSTransition timeout={120_000} classNames="task">
 				<div className="gantt-bar"
 				style={{
 					animation: `progress ${task.duration / speed}s linear`
