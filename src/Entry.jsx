@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client'
-import { GanttBuilder, ProcessForm } from './App.jsx'
 import './index.css'
 import './entry.css'
 import './GanttChart.css'
+import { ProcessForm } from './ProcessForm.jsx'
 
 function App() {
   return (
