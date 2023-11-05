@@ -1,0 +1,75 @@
+ESTRUTURA PARA SAIDA DE INFOS DO MENU:
+processos = [
+	{
+		id:
+		arrival_time:
+		execution_time:
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+	}
+]
+
+ESTRUTURA DE SAIDA DE INFOS DO FIFO:
+processos = [
+	{
+		id:
+		arrival_time:
+		execution_time:
+		start_time: 0
+		end_time: 0
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+		start_time: 0
+		end_time: 0
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+		start_time: 0
+		end_time: 0
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+		start_time: 0
+		end_time: 0
+	}
+
+	{
+		id:
+		arrival_time:
+		execution_time:
+		start_time: 0
+		end_time: 0
+	}
+]
