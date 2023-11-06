@@ -84,8 +84,13 @@ export function App() {
   // Options requeridas pelo Google Chart
   let options = {
     allowHtml: true,
-    enableInteractivity: false
-  };
+    enableInteractivity: false,
+    hAxis: {
+      minValue: 0,
+      maxValue: 60,
+    },
+  }
+  
 
   function calculateTurnaround(process) {
     if (process.id != "Chaveamento"){
