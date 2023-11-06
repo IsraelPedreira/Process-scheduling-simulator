@@ -14,8 +14,10 @@ function App() {
 		<div className="entry">
 		  <div className="entry-form">
 			<ProcessForm processTable={processTable} updateProcessTable={updateProcessTable}/> {/* Render the ProcessForm component here */}
-            <ProcessList processes={processTable}/>
 		  </div>
+          <div className="entry-list">
+            <ProcessList processes={processTable}/>
+		 </div>
 		 </div>
     );
 }

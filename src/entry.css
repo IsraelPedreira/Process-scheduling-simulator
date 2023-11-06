@@ -1,18 +1,24 @@
 /* style the background and body */
 body {
-	background-color: #FFFFFF;
+	background-color: #FAFAFA;
 }
 
 /* style the entry containers */
-/* #entry-root { */
-/* 	width: 100%; */
-/* } */
-.entry {
-	width: 100%; /* of entry-root */
+#entry-root {
+	width: 100%;
 }
-
-.process-list {
-  background-color: #FF0000;
+.entry{
+  padding: 2%;
+  display: flex;
+  align-items: center;
+}
+.entry-form{
+  flex: 1;
+  padding:20px;
+}
+.entry-list{
+  flex: 1;
+  padding:20px;
 }
 
 /* Style for the form container */
@@ -27,17 +33,19 @@ body {
 }
 
 /* Style for form headings */
+.process-list h2,
 .process-form-container h2 {
   font-size: 1.5rem;
   margin-bottom: 20px;
   color: #333;
+  text-align: center;
 }
 
 /* Style for form labels */
 .process-form-container label {
   display: block;
   margin-bottom: 6px;
-  color: #555;
+  color: #333;
   font-weight: bold;
 }
 
@@ -48,23 +56,23 @@ body {
 /* Style for form inputs */
 .process-form-container input {
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #333333;
+  color: rgba(18, 18, 18, 0.87);
+  background-color: #FAFAFA;
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #999;
+  border-radius: 10px;
   font-size: 1rem;
 }
 
 /* Style for the submit button */
 .process-form-container button {
-  background-color: #007bff;
+  background-color: #007bee;
   color: #fff;
   padding: 10px 15px;
   border: none;
-  border-radius: 4px;
+  border-radius: 45px;
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s;
@@ -74,15 +82,22 @@ body {
   background-color: #0056b3;
 }
 
-.exit-buttons > * {
-	margin-left: 12%;
-	margin-right: 12%;
-	/* display: flex; */
-	/* justify-content: center; */
+.exit-buttons {
+	display: flex;
+	justify-content: center;
+  align-itemst: center;
 	/* separate the buttons horizontally only */
 }
 
-.entry-title {
-	color: (0, 0, 0, 0.87);
-	font-size: 3.2em;
+
+/* Lista de processos */
+.process-list {
+  min-width: 650px;
+  min-height: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #CCE;
 }

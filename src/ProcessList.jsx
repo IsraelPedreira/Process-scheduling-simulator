@@ -3,10 +3,10 @@ import React from 'react';
 export function ProcessList() {
   var process_table = JSON.parse(localStorage.getItem("process_table"));
   return (
-    <div>
+    <div className="process-list">
     <h2>Processos criados</h2>
       {process_table !== null?
-       <ul>
+       <ul className="list">
          {
              process_table.map((process) => (
                <li key={process.pid}>

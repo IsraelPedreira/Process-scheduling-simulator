@@ -84,8 +84,8 @@ export class ProcessForm extends Component {
 	render() {
 		return (
 			<div className="process-form-container">
-				<h2>Criar novo processo</h2>
-				<form>
+              <h2>Criar novo processo</h2>
+              <form>
 					<div>
 						<label htmlFor="pid">PID:</label>
 						<input
