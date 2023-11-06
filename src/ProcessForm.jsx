@@ -15,16 +15,16 @@ class ProcessTableWrapper {
 }
 
 // export const process_table = new ProcessTableWrapper()
-const process_table = []
+//const process_table = []
 
-function generateTask(pid = -1, arrival_time = 0, duration = 50, priority = 1, deadline = 100, randomize = true) {
+function generateTask(process_table, pid = -1, arrival_time = 0, duration = 50, priority = 1, deadline = 100, randomize = true) {
 	if (randomize){
 		arrival_time = Math.floor(Math.random() * 100)
 		duration = Math.floor(Math.random() * (100 - arrival_time))
 		priority = Math.floor(Math.random() * max_priority)
 		deadline = Math.floor(Math.random() * max_deadline)
 	}
-	if (pid = -1){
+	if (pid === -1){
 		pid = process_table.length + 1
 	}
 	const newTask = {
