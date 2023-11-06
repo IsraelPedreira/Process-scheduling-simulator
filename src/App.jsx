@@ -87,6 +87,12 @@ export function App() {
     enableInteractivity: false
   };
 
+  function calculateTurnaround(process) {
+    if (process.id != "Chaveamento"){
+      return process.end_time - process.arrival_time;
+    }
+  }
+
   // Funcao que anima o chart
   async function chart_animation(chartData) {
     //   chartData.map((processo, index) => {
@@ -99,7 +105,7 @@ export function App() {
    
     const delay = 1; // delay de atualizacao da animacao
     const animationStep = 0.03; // de quanto em quanto a barra vai crescer
-    console.log(chartData);
+  
     for (let i = 0; i < chartData.length; i++) {
       await new Promise((resolve) => requestAnimationFrame(resolve)); // Use requestAnimationFrame for smoother animations
 
@@ -130,42 +136,50 @@ export function App() {
   }, []);
   */
 
-  /* Roda quando a pagina carrega e faz a rotina de
-   converter chamar o SJF nos dados e chamar 
-   animacao 
+  //Roda quando a pagina carrega e faz a rotina de
+  //  converter chamar o SJF nos dados e chamar 
+  //  animacao 
   useEffect(() => {
     let SJF_data = SJF(data_from_menu);
-    RR(data_from_menu2);
+    //RR(data_from_menu2);
+
+    let turnarounds = SJF_data.reduce((soma, process) => {
+      if(process.id != "Chaveamento"){
+        return soma + calculateTurnaround(process);
+      }
+      return soma
+    }, 0)
+
+    turnarounds = turnarounds / (data_from_menu.length);
+    setTotalTurnaround(turnarounds.toFixed(2));
+
     let chartData = Convert(SJF_data);
     chart_animation(chartData);
   }, []);
-  */
+  
 
-  function calculateTurnaround(process) {
-    if (process.id != "Chaveamento"){
-      return process.end_time - process.arrival_time;
-    }
-}
+  
 
-  useEffect(() => {
-    let RR_data = RR(data_from_menu2);
+  // useEffect(() => {
+  //   let RR_data = RR(data_from_menu2);
 
-      // Calcula o turnaround para cada processo
-    const turnarounds = RR_data.map(process => calculateTurnaround(process));
+  //     // Calcula o turnaround para cada processo
+  //   const turnarounds = RR_data.map(process => calculateTurnaround(process));
     
-    // Calcula o turnaround médio total
-    let totalTurnaround = turnarounds.reduce((total, turnaround) => {
-      if(turnaround){
-        return total + turnaround
-      }
-      return total    
-    }, 0) ;
+  //   // Calcula o turnaround médio total
+  //   let totalTurnaround = turnarounds.reduce((total, turnaround) => {
+  //     if(turnaround){
+  //       return total + turnaround
+  //     }
+  //     return total    
+  //   }, 0) ;
 
-    totalTurnaround = (totalTurnaround / (data_from_menu2.length - 1)).toFixed(2);
-    setTotalTurnaround(totalTurnaround);
+  //   totalTurnaround = (totalTurnaround / (data_from_menu2.length - 1)).toFixed(2);
+  //   setTotalTurnaround(totalTurnaround);
 
-    let chartData = Convert(RR_data);
-    chart_animation(chartData);
-  }, []);
+  //   let chartData = Convert(RR_data);
+  //   chart_animation(chartData);
+  // }, []);
+
   return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }
