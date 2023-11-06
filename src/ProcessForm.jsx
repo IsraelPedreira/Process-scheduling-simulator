@@ -41,7 +41,6 @@ function generateTask(process_table, pid = -1, arrival_time = 0, duration = 50, 
 export class ProcessForm extends Component {
 	constructor(props) {
 		super(props);
-        this.process_table = this.props.parseTable;
         this.state = {
 			"pid": '',
 			"arrival_time": '',
@@ -58,6 +57,14 @@ export class ProcessForm extends Component {
 
 	handleAddProcess = (event) => {
 		event.preventDefault();
+        this.process_table = JSON.parse(localStorage.getItem("process_table"))
+        if (this.process_table === null){
+            this.process_table = this.props.processTable;
+        }
+        if (this.process_table.length >= 8) {
+            alert("O limite máximo de processos são 8.")
+            return;
+        }
 		// You can handle the form submission here, e.g., send the data to an API or process it further.
 		for (const key in this.state) {
 			const value = this.state[key]
@@ -65,13 +72,12 @@ export class ProcessForm extends Component {
 				alert("Please enter a number for " + key)
 			}
 		}
+
 		console.log('Form data submitted:', this.state);
-        this.process_table = JSON.parse(localStorage.getItem("process_table"))
 		this.props.updateProcessTable(
             AddProcess(this.process_table, ...Object.values(this.state).map(x => parseInt(x)))
         );
 		localStorage.setItem("process_table", JSON.stringify(this.process_table))
-		console.log("process table is", this.process_table)
 	}
 
 	handleOnSubmit = (event) => {
@@ -85,7 +91,7 @@ export class ProcessForm extends Component {
 		return (
 			<div className="process-form-container">
               <h2>Criar novo processo</h2>
-              <form>
+              	<form>
 					<div>
 						<label htmlFor="pid">PID:</label>
 						<input
