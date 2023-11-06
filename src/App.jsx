@@ -79,15 +79,24 @@ export function App() {
 
   // UseState pra o array de guarda as infos do chart
   const [to_chart_data, setToChartData] = useState([]);
+  const [totalTurnaround, setTotalTurnaround] = useState(0);
 
   // Options requeridas pelo Google Chart
-  var options = {
+  let options = {
     allowHtml: true,
     enableInteractivity: false
   };
 
   // Funcao que anima o chart
   async function chart_animation(chartData) {
+    //   chartData.map((processo, index) => {
+    //     if(index > 0){
+    //       processo[3] = new Date(0,0,0,0,0,processo[3])
+    //       processo[4] = new Date(0,0,0,0,0,processo[4])
+    //     }
+
+    // })
+   
     const delay = 1; // delay de atualizacao da animacao
     const animationStep = 0.03; // de quanto em quanto a barra vai crescer
     console.log(chartData);
@@ -132,11 +141,31 @@ export function App() {
   }, []);
   */
 
+  function calculateTurnaround(process) {
+    if (process.id != "Chaveamento"){
+      return process.end_time - process.arrival_time;
+    }
+}
+
   useEffect(() => {
     let RR_data = RR(data_from_menu2);
+
+      // Calcula o turnaround para cada processo
+    const turnarounds = RR_data.map(process => calculateTurnaround(process));
+    
+    // Calcula o turnaround médio total
+    let totalTurnaround = turnarounds.reduce((total, turnaround) => {
+      if(turnaround){
+        return total + turnaround
+      }
+      return total    
+    }, 0) ;
+
+    totalTurnaround = (totalTurnaround / (data_from_menu2.length - 1)).toFixed(2);
+    setTotalTurnaround(totalTurnaround);
 
     let chartData = Convert(RR_data);
     chart_animation(chartData);
   }, []);
-  return <ChartComponent data={to_chart_data} options={options} />;
+  return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }

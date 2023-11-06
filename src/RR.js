@@ -43,6 +43,7 @@ export default function RR(data) {
   
       // Cria o "processo" de preempcao
       let preemptionProcess = { ...newProcessToManipulate };
+      preemptionProcess.id = "Chaveamento";
       preemptionProcess.start_time = newProcessToManipulate.end_time;
       preemptionProcess.execution_time = preemption;
       preemptionProcess.end_time =
