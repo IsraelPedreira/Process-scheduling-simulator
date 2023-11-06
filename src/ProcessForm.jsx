@@ -41,7 +41,8 @@ function generateTask(process_table, pid = -1, arrival_time = 0, duration = 50, 
 export class ProcessForm extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
+        this.process_table = this.props.parseTable;
+        this.state = {
 			"pid": '',
 			"arrival_time": '',
 			"duration": '',
@@ -65,21 +66,25 @@ export class ProcessForm extends Component {
 			}
 		}
 		console.log('Form data submitted:', this.state);
-		AddProcess(process_table, ...Object.values(this.state).map(x => parseInt(x)))
-		console.log("process table is", process_table)
+        this.process_table = JSON.parse(localStorage.getItem("process_table"))
+		this.props.updateProcessTable(
+            AddProcess(this.process_table, ...Object.values(this.state).map(x => parseInt(x)))
+        );
+		localStorage.setItem("process_table", JSON.stringify(this.process_table))
+		console.log("process table is", this.process_table)
 	}
 
 	handleOnSubmit = (event) => {
 		event.preventDefault();
-		console.log("final process table is", process_table)
-		localStorage.setItem("process_table", JSON.stringify(process_table))
+		console.log("final process table is", this.process_table)
+		localStorage.setItem("process_table", JSON.stringify(this.process_table))
 		window.location.href = "gantt.html" 
 	}
 
 	render() {
 		return (
 			<div className="process-form-container">
-				<h2>Enter Process Details</h2>
+				<h2>Criar novo processo</h2>
 				<form>
 					<div>
 						<label htmlFor="pid">PID:</label>
@@ -92,7 +97,7 @@ export class ProcessForm extends Component {
 						/>
 					</div>
 					<div>
-						<label htmlFor="arrival_time">Arrival Time:</label>
+						<label htmlFor="arrival_time">Chegada:</label>
 						<input
 							type="text"
 							id="arrival_time"
@@ -102,7 +107,7 @@ export class ProcessForm extends Component {
 						/>
 					</div>
 					<div>
-						<label htmlFor="duration">Duration:</label>
+						<label htmlFor="duration">Duração:</label>
 						<input
 							type="text"
 							id="duration"
@@ -112,7 +117,7 @@ export class ProcessForm extends Component {
 						/>
 					</div>
 					<div>
-						<label htmlFor="priority">Priority:</label>
+						<label htmlFor="priority">Prioridade:</label>
 						<input
 							type="text"
 							id="priority"
@@ -132,8 +137,8 @@ export class ProcessForm extends Component {
 						/>
 					</div>
 					<div className="exit-buttons">
-						<button onClick={this.handleAddProcess} type="submit">Add task</button>
-						<button onClick={this.handleOnSubmit} type="submit">Show</button>
+						<button onClick={this.handleAddProcess} type="submit">Adicionar</button>
+						{/* <button onClick={this.handleOnSubmit} type="submit">Show</button> */}
 					</div>
 				</form>
 			</div>

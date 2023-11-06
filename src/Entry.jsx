@@ -4,20 +4,20 @@ import './index.css'
 import './entry.css'
 import './GanttChart.css'
 import { ProcessForm } from './ProcessForm.jsx'
+import { ProcessList } from './ProcessList.jsx'
+import { ProcessTable } from './ProcessTable.jsx'
 
 function App() {
-  return (
-		<div className="entry" style={{width: "50%", left: 0}}>
-			<div className="entry-form">
-				<div className="entry-header">
-					<h1>Process Form App</h1>
-				</div>
-				<ProcessForm /> {/* Render the ProcessForm component here */}
-			</div>
-			<div className="entry-view">
-			</div>
-		</div>
-  );
+    const {processTable, updateProcessTable} = ProcessTable();
+    console.log("Process table:", processTable);
+    return (
+		<div className="entry">
+		  <div className="entry-form">
+			<ProcessForm processTable={processTable} updateProcessTable={updateProcessTable}/> {/* Render the ProcessForm component here */}
+            <ProcessList processes={processTable}/>
+		  </div>
+		 </div>
+    );
 }
 
 ReactDOM.createRoot(document.getElementById('entry-root')).render(

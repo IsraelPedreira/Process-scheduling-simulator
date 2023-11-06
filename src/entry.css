@@ -1,24 +1,18 @@
 /* style the background and body */
 body {
-	background-color: #333333;
+	background-color: #FFFFFF;
 }
 
 /* style the entry containers */
-#entry-root {
-	width: 100%;
-}
+/* #entry-root { */
+/* 	width: 100%; */
+/* } */
 .entry {
-	width: 40%; /* of entry-root */
+	width: 100%; /* of entry-root */
 }
 
-/* style the text*/
-.entry-header {
-	display: flex;
-	justify-content: center;
-}
-
-.entry-header > h1 {
-	color: rgba(255, 255, 255, 0.87);
+.process-list {
+  background-color: #FF0000;
 }
 
 /* Style for the form container */
@@ -29,7 +23,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: #CCE;
 }
 
 /* Style for form headings */
