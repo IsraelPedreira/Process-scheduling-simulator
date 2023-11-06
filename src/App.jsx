@@ -126,24 +126,13 @@ export function App() {
     }
   }
 
-  /* Roda quando a pagina carrega e faz a rotina de
-   converter chamar o FIFO nos dados e chamar 
-   animacao 
+  // Roda quando a pagina carrega e faz a rotina de
+  // converter chamar o FIFO nos dados e chamar 
+  // animacao 
   useEffect(() => {
     let FIFO_data = FIFO(data_from_menu);
-    let chartData = Convert(FIFO_data);
-    chart_animation(chartData);
-  }, []);
-  */
 
-  //Roda quando a pagina carrega e faz a rotina de
-  //  converter chamar o SJF nos dados e chamar 
-  //  animacao 
-  useEffect(() => {
-    let SJF_data = SJF(data_from_menu);
-    //RR(data_from_menu2);
-
-    let turnarounds = SJF_data.reduce((soma, process) => {
+    let turnarounds = FIFO_data.reduce((soma, process) => {
       if(process.id != "Chaveamento"){
         return soma + calculateTurnaround(process);
       }
@@ -153,9 +142,31 @@ export function App() {
     turnarounds = turnarounds / (data_from_menu.length);
     setTotalTurnaround(turnarounds.toFixed(2));
 
-    let chartData = Convert(SJF_data);
+    let chartData = Convert(FIFO_data);
     chart_animation(chartData);
   }, []);
+ 
+
+  //Roda quando a pagina carrega e faz a rotina de
+  //  converter chamar o SJF nos dados e chamar 
+  //  animacao 
+  // useEffect(() => {
+  //   let SJF_data = SJF(data_from_menu);
+  //   //RR(data_from_menu2);
+
+  //   let turnarounds = SJF_data.reduce((soma, process) => {
+  //     if(process.id != "Chaveamento"){
+  //       return soma + calculateTurnaround(process);
+  //     }
+  //     return soma
+  //   }, 0)
+
+  //   turnarounds = turnarounds / (data_from_menu.length);
+  //   setTotalTurnaround(turnarounds.toFixed(2));
+
+  //   let chartData = Convert(SJF_data);
+  //   chart_animation(chartData);
+  // }, []);
   
 
   
