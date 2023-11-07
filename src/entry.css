@@ -1,0 +1,135 @@
+/* style the background and body */
+body {
+	background-color: #FAFAFA;
+}
+
+/* style the entry containers */
+#entry-root {
+	width: 100%;
+}
+.entry{
+  padding: 2%;
+  display: flex;
+  align-items: center;
+}
+.entry-form{
+  flex: 1;
+  padding:20px;
+}
+.entry-list{
+  flex: 1;
+  padding:20px;
+}
+
+/* Style for the form container */
+.process-form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #CCE;
+}
+
+/* Style for form headings */
+.process-list h2,
+.process-form-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+/* Style for form labels */
+.process-form-container label {
+  display: block;
+  margin-bottom: 6px;
+  color: #333;
+  font-weight: bold;
+}
+
+.process-form-container form {
+	margin-right: 15px;
+}
+
+/* Style for form inputs */
+.process-form-container input {
+  color-scheme: light dark;
+  color: rgba(18, 18, 18, 0.87);
+  background-color: #FAFAFA;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+/* Style for the submit button */
+.process-form-container button {
+  background-color: #007bee;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 45px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.process-form-container button:hover {
+  background-color: #0056b3;
+}
+
+.exit-buttons {
+	display: flex;
+	justify-content: center;
+  align-itemst: center;
+	/* separate the buttons horizontally only */
+}
+
+
+/* Lista de processos */
+.process-list {
+  min-height: 300px;
+  max-height: 50%;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #CCE;
+}
+
+.list {
+  display: grid;
+  padding: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+}
+
+.list >* {
+  margin-bottom: 15px;
+  list-style: none;
+}
+
+.process {
+  background-color: white;
+  padding: 10px;
+  max-width: 150px;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+}
+.process-identification {
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.process-description-container {
+  width: 150px;
+}
+
+.process-description-table {
+  width: 150px;
+}
