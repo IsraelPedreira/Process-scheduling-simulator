@@ -1,125 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { ChartComponent } from "./Chart";
-import FIFO from "./FIFO";
-import SJF from "./SJF";
-import RR from "./RR";
+import FIFO from "./sched/FIFO";
+import SJF from "./sched/SJF";
+import RR from "./sched/RR";
+import EDF from "./sched/EDF";
 import Convert from "./utils";
-import EDF from "./EDF";
 
-export function App() {
+export function ChartFactory({ data_from_menu }) {
   // Simulado os dados que virao do menu
-  const data_from_menu = [
-    {
-      id: 1,
-      arrival_time: 2,
-      execution_time: 2
-    },
-    {
-      id: 2,
-      arrival_time: 3,
-      execution_time: 2
-    },
-    {
-      id: 3,
-      arrival_time: 3,
-      execution_time: 7
-    },
-    {
-      id: 4,
-      arrival_time: 4,
-      execution_time: 7
-    },
-    {
-      id: 5,
-      arrival_time: 4,
-      execution_time: 12
-    },
-    {
-      id: 6,
-      arrival_time: 3,
-      execution_time: 5
-    }
-  ];
-
-  const data_from_menu2 = [
-    {
-      preemption: 1,
-      quantum: 4
-    },
-    {
-      id: 1,
-      arrival_time: 4,
-      execution_time: 2
-    },
-    {
-      id: 2,
-      arrival_time: 3,
-      execution_time: 2
-    },
-    {
-      id: 3,
-      arrival_time: 3,
-      execution_time: 7
-    },
-    {
-      id: 4,
-      arrival_time: 4,
-      execution_time: 7
-    },
-    {
-      id: 5,
-      arrival_time: 4,
-      execution_time: 12
-    },
-    {
-      id: 6,
-      arrival_time: 3,
-      execution_time: 5
-    }
-  ];
-
-  const data_from_menuEDF = [
-    {
-      preemption: 1,
-      quantum: 4
-    },
-    {
-      id: 1,
-      arrival_time: 4,
-      execution_time: 2,
-      deadline: 45
-    },
-    {
-      id: 2,
-      arrival_time: 3,
-      execution_time: 2,
-      deadline: 23
-    },
-    {
-      id: 3,
-      arrival_time: 3,
-      execution_time: 7,
-      deadline: 30
-    },
-    {
-      id: 4,
-      arrival_time: 4,
-      execution_time: 7,
-      deadline: 35
-    },
-    {
-      id: 5,
-      arrival_time: 4,
-      execution_time: 12,
-      deadline: 29
-    },
-    {
-      id: 6,
-      arrival_time: 3,
-      execution_time: 5,
-      deadline: 23
-    }
-  ];
+  // const data_from_menu = [
+  //   {
+  //     id: 1,
+  //     arrival_time: 2,
+  //     execution_time: 2
+  //   },
+  //   {
+  //     id: 2,
+  //     arrival_time: 3,
+  //     execution_time: 2
+  //   },
+  //   {
+  //     id: 3,
+  //     arrival_time: 3,
+  //     execution_time: 7
+  //   },
+  //   {
+  //     id: 4,
+  //     arrival_time: 4,
+  //     execution_time: 7
+  //   },
+  //   {
+  //     id: 5,
+  //     arrival_time: 4,
+  //     execution_time: 12
+  //   },
+  //   {
+  //     id: 6,
+  //     arrival_time: 3,
+  //     execution_time: 5
+  //   }
+  // ];
 
   // UseState pra o array de guarda as infos do chart
   const [to_chart_data, setToChartData] = useState([]);
@@ -139,11 +59,9 @@ export function App() {
   }
   
 
-  function calculateTurnaround(process) {
-    if (process.id != "Chaveamento"){
-      return process.end_time - process.arrival_time;
-    }
-  }
+  // function calculateTurnaround(process) {
+  //   return process.end_time - process.arrival_time;
+  // }
 
   // Funcao que anima o chart
   async function chart_animation(chartData) {
@@ -180,22 +98,33 @@ export function App() {
   // Roda quando a pagina carrega e faz a rotina de
   // converter chamar o FIFO nos dados e chamar 
   // animacao 
-  // useEffect(() => {
-  //   let FIFO_data = FIFO(data_from_menu);
+  useEffect(() => {
+    let FIFO_data = FIFO(data_from_menu);
 
-  //   let turnarounds = FIFO_data.reduce((soma, process) => {
-  //     if(process.id != "Chaveamento"){
-  //       return soma + calculateTurnaround(process);
-  //     }
-  //     return soma
-  //   }, 0)
+    let turnarounds = []
+    // let turnarounds = FIFO_data.reduce((soma, process) => {
+    //   if(process.pid != "Chaveamento"){
+    //     return soma + process.duration;
+    //   }
+    //   return soma
+    // }, data_from_menu[0].arrival_time)
+    let acc = data_from_menu[0].arrival_time
+    for (const process of data_from_menu){
+      acc += process.duration
+      turnarounds.push(acc - process.arrival_time)
+    }
 
-  //   turnarounds = turnarounds / (data_from_menu.length);
-  //   setTotalTurnaround(turnarounds.toFixed(2));
-
-  //   let chartData = Convert(FIFO_data);
-  //   chart_animation(chartData);
-  // }, []);
+    let final_turnaround = 0.0
+    for (const tt of turnarounds){
+      final_turnaround += tt / turnarounds.length
+    }
+    setTotalTurnaround(final_turnaround.toFixed(2));
+    
+    console.log("raw data to chart passed is", FIFO_data) // FIXME REMOVE
+    let chartData = Convert(FIFO_data);
+    console.log("chartData to chart passed is", chartData) // FIXME REMOVE
+    chart_animation(chartData);
+  }, []);
  
 
   //Roda quando a pagina carrega e faz a rotina de
@@ -243,14 +172,17 @@ export function App() {
   //   chart_animation(chartData);
   // }, []);
 
-  useEffect(() => {
-    let EDF_data = EDF(data_from_menuEDF);
+  // useEffect(() => {
+  //   // TODO use if-else clauses to choose sched algorithm
+  //   console.log("raw data from menu is", data_from_menu)
+  //  // FIXME REMOVE
+  //   let menuData = EDF(data_from_menu);
     
-    let chartData = Convert(EDF_data);
+  //   let chartData = Convert(menuData);
    
-    chart_animation(chartData);
+  //   chart_animation(chartData);
 
-   }, []);
+  //  }, []);
 
   return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }

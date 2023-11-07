@@ -85,7 +85,7 @@ body {
 .exit-buttons {
 	display: flex;
 	justify-content: center;
-  align-itemst: center;
+  align-items: center;
 	/* separate the buttons horizontally only */
 }
 

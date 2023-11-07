@@ -11,10 +11,10 @@ export default function Convert(data) {
     const end_time = data[data.length - 1].end_time;
   
     // ARMENGUE: colocando a timeline no tamanho certo
-    converted_data.push([`P${data[0].id}`, null, null, end_time, end_time]);
+    converted_data.push([`P${data[0].pid}`, null, null, end_time, end_time]);
   
     data.forEach((objeto) => {
-      let name = `P${objeto.id}`;
+      let name = `P${objeto.pid}`;
       let start = objeto.start_time;
       let end = objeto.end_time;
       converted_data.push([name, null, null, start, end]);
