@@ -63,6 +63,11 @@ export function ProcessForm(props) {
       return;
     }
 
+    if (props.processTable.find((process) => process.pid == formData.pid)){
+        alert("Um processo de PID " + formData.pid + " já existe")
+        return;
+    }
+
     for (const key in formData) {
       const value = formData[key];
     //   if (isNaN(value) || parseInt(Number(value)) !== value) {
