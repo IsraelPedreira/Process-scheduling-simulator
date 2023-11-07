@@ -89,6 +89,9 @@ export function App() {
       minValue: 0,
       maxValue: 60,
     },
+    timeline: {
+      colorByRowLabel: true,
+    },
   }
   
 
@@ -100,14 +103,13 @@ export function App() {
 
   // Funcao que anima o chart
   async function chart_animation(chartData) {
-    //   chartData.map((processo, index) => {
-    //     if(index > 0){
-    //       processo[3] = new Date(0,0,0,0,0,processo[3])
-    //       processo[4] = new Date(0,0,0,0,0,processo[4])
-    //     }
-
-    // })
-   
+      chartData.map((processo, index) => {
+        if(index > 0){  
+          processo[1] = `${processo[3]} - ${processo[4]}`
+        } 
+      })
+      chartData.splice(1,1);
+      
     const delay = 1; // delay de atualizacao da animacao
     const animationStep = 0.03; // de quanto em quanto a barra vai crescer
   
