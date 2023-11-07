@@ -1,19 +1,18 @@
 import React from 'react';
 
-export function ProcessList() {
-  var process_table = sessionStorage.getItem("process_table");
-  console.log("process table in pList is ", process_table)
-  if (process_table) {
-    // OK CONDITION
-    process_table = JSON.parse(process_table)
-  }
+export function ProcessList(props) {
+  console.log("process table in pList is ", props.processTable)
+  // if (props.processTable) {
+  //   // OK CONDITION
+  //   props.processTable = JSON.parse(props.processTable)
+  // }
   return (
     <div className="process-list">
     <h2>Processos criados</h2>
-      {process_table.length > 0 ?
+      {props.processTable.length > 0 ?
        <ul className="list">
          {
-             process_table.map((process) => (
+             props.processTable.map((process) => (
                <li key={process.pid}>
                  <div className="process">
                    <div className="process-identification">

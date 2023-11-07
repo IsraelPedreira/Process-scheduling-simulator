@@ -54,14 +54,11 @@ export function ProcessForm(props) {
 
   const handleAddProcess = (event) => {
     event.preventDefault();
-    // let processTable = sessionStorage.getItem("process_table");
+    let sessionProcessTable = sessionStorage.getItem("process_table") !== null
+        ? JSON.parse(sessionStorage.getItem("process_table"))
+        : props.processTable;
 
-    // if (processTable === null) {
-    //   processTable = props.processTable;
-    // }
-
-    let processTable = props.processTable;
-    if (processTable.length >= 8) {
+    if (props.processTable.length >= 8) {
       alert("O limite máximo de processos são 8.");
       return;
     }
@@ -75,8 +72,8 @@ export function ProcessForm(props) {
     }
 
     console.log('Form data submitted:', formData);
-    props.updateProcessTable(AddProcess(processTable, ...Object.values(formData).map(x => parseInt(x))));
-    sessionStorage.setItem("process_table", JSON.stringify(processTable));
+    props.updateProcessTable(AddProcess(sessionProcessTable, ...Object.values(formData).map(x => parseInt(x))));
+    sessionStorage.setItem("process_table", JSON.stringify(sessionProcessTable));
   }
 
   const handleOnSubmit = (event) => {
