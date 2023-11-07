@@ -5,10 +5,12 @@ import './entry.css'
 import { ProcessForm } from './ProcessForm.jsx'
 import { ProcessList } from './ProcessList.jsx'
 
+sessionStorage.setItem("process_table", [])
+
 function App() {
     //sessionStorage.setItem("process_table", [])
     const [processTable, updateProcessTable] = useState([]);
-    console.log("Process table:", processTable);
+    // console.log("Process table:", processTable); // being updated OK
     return (
 		<div className="entry">
 		  <div className="entry-form">

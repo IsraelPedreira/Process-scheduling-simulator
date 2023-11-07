@@ -54,7 +54,7 @@ export function ProcessForm(props) {
 
   const handleAddProcess = (event) => {
     event.preventDefault();
-    let sessionProcessTable = sessionStorage.getItem("process_table") !== null
+    let sessionProcessTable = sessionStorage.getItem("process_table")
         ? JSON.parse(sessionStorage.getItem("process_table"))
         : props.processTable;
 
@@ -72,14 +72,23 @@ export function ProcessForm(props) {
     }
 
     console.log('Form data submitted:', formData);
-    props.updateProcessTable(AddProcess(sessionProcessTable, ...Object.values(formData).map(x => parseInt(x))));
-    sessionStorage.setItem("process_table", JSON.stringify(sessionProcessTable));
+	const _copy = [...sessionProcessTable]
+	const _updated = AddProcess(_copy, ...Object.values(formData).map(x => parseInt(x)))
+	// update sessionProcessTable via setter (useState)
+    props.updateProcessTable(_updated);
+	// store in sessionStorage
+    sessionStorage.setItem("process_table", JSON.stringify(_updated));
   }
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    console.log("final process table is", sessionStorage.getItem("process_table"));
-    window.location.href = "gantt.html";
+    const stringfied_process_table = sessionStorage.getItem("process_table")
+	if (!stringfied_process_table){
+		alert("Erro: informe pelo menos um processo")
+	} else {
+		window.location.href = "gantt.html";
+	}
+    
   }
 
   return (

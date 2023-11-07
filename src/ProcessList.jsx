@@ -1,7 +1,6 @@
 import React from 'react';
 
 export function ProcessList(props) {
-  console.log("process table in pList is ", props.processTable)
   // if (props.processTable) {
   //   // OK CONDITION
   //   props.processTable = JSON.parse(props.processTable)
