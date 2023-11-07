@@ -4,6 +4,7 @@ import FIFO from "./FIFO";
 import SJF from "./SJF";
 import RR from "./RR";
 import Convert from "./utils";
+import EDF from "./EDF";
 
 export function App() {
   // Simulado os dados que virao do menu
@@ -77,6 +78,49 @@ export function App() {
     }
   ];
 
+  const data_from_menuEDF = [
+    {
+      preemption: 1,
+      quantum: 4
+    },
+    {
+      id: 1,
+      arrival_time: 4,
+      execution_time: 2,
+      deadline: 45
+    },
+    {
+      id: 2,
+      arrival_time: 3,
+      execution_time: 2,
+      deadline: 23
+    },
+    {
+      id: 3,
+      arrival_time: 3,
+      execution_time: 7,
+      deadline: 30
+    },
+    {
+      id: 4,
+      arrival_time: 4,
+      execution_time: 7,
+      deadline: 35
+    },
+    {
+      id: 5,
+      arrival_time: 4,
+      execution_time: 12,
+      deadline: 29
+    },
+    {
+      id: 6,
+      arrival_time: 3,
+      execution_time: 5,
+      deadline: 23
+    }
+  ];
+
   // UseState pra o array de guarda as infos do chart
   const [to_chart_data, setToChartData] = useState([]);
   const [totalTurnaround, setTotalTurnaround] = useState(0);
@@ -136,22 +180,22 @@ export function App() {
   // Roda quando a pagina carrega e faz a rotina de
   // converter chamar o FIFO nos dados e chamar 
   // animacao 
-  useEffect(() => {
-    let FIFO_data = FIFO(data_from_menu);
+  // useEffect(() => {
+  //   let FIFO_data = FIFO(data_from_menu);
 
-    let turnarounds = FIFO_data.reduce((soma, process) => {
-      if(process.id != "Chaveamento"){
-        return soma + calculateTurnaround(process);
-      }
-      return soma
-    }, 0)
+  //   let turnarounds = FIFO_data.reduce((soma, process) => {
+  //     if(process.id != "Chaveamento"){
+  //       return soma + calculateTurnaround(process);
+  //     }
+  //     return soma
+  //   }, 0)
 
-    turnarounds = turnarounds / (data_from_menu.length);
-    setTotalTurnaround(turnarounds.toFixed(2));
+  //   turnarounds = turnarounds / (data_from_menu.length);
+  //   setTotalTurnaround(turnarounds.toFixed(2));
 
-    let chartData = Convert(FIFO_data);
-    chart_animation(chartData);
-  }, []);
+  //   let chartData = Convert(FIFO_data);
+  //   chart_animation(chartData);
+  // }, []);
  
 
   //Roda quando a pagina carrega e faz a rotina de
@@ -198,6 +242,15 @@ export function App() {
   //   let chartData = Convert(RR_data);
   //   chart_animation(chartData);
   // }, []);
+
+  useEffect(() => {
+    let EDF_data = EDF(data_from_menuEDF);
+    
+    let chartData = Convert(EDF_data);
+   
+    chart_animation(chartData);
+
+   }, []);
 
   return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }
