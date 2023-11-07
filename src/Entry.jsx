@@ -6,7 +6,6 @@ import { ProcessForm } from './ProcessForm.jsx'
 import { ProcessList } from './ProcessList.jsx'
 
 function App() {
-    //sessionStorage.setItem("process_table", [])
     const [processTable, updateProcessTable] = useState([]);
     console.log("Process table:", processTable);
     return (
