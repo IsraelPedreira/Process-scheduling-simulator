@@ -2,7 +2,6 @@ export default function FIFO(data) {
     const sortedData = [...data];
 
     sortedData.sort((a, b) => a.arrival_time - b.arrival_time);
-    console.log(sortedData);
     let first_free_start_time = 0;
   
     sortedData.forEach((objeto) => {

@@ -54,41 +54,36 @@ export function ProcessForm(props) {
 
   const handleAddProcess = (event) => {
     event.preventDefault();
-    let sessionProcessTable = sessionStorage.getItem("process_table")
-        ? JSON.parse(sessionStorage.getItem("process_table"))
-        : props.processTable;
-
+    
     if (props.processTable.length >= 8) {
       alert("O limite máximo de processos são 8.");
       return;
     }
 
-    for (const key in formData) {
-      const value = formData[key];
-    //   if (isNaN(value) || parseInt(Number(value)) !== value) {
-    //     alert("Please enter a number for " + key);
-    //     return;
-    //   }
-    }
+    // for (const key in formData) {
+    //   const value = formData[key];
+    // //   if (isNaN(value) || parseInt(Number(value)) !== value) {
+    // //     alert("Please enter a number for " + key);
+    // //     return;
+    // //   }
+    // }
 
     console.log('Form data submitted:', formData);
-	const _copy = [...sessionProcessTable]
-	const _updated = AddProcess(_copy, ...Object.values(formData).map(x => parseInt(x)))
-	// update sessionProcessTable via setter (useState)
+	const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
     props.updateProcessTable(_updated);
-	// store in sessionStorage
-    sessionStorage.setItem("process_table", JSON.stringify(_updated));
   }
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    const stringfied_process_table = sessionStorage.getItem("process_table")
-	if (!stringfied_process_table){
-		alert("Erro: informe pelo menos um processo")
+	if (!props.processTable){
+		alert("Erro: informe pelo menos um processo");
 	} else {
-		window.location.href = "gantt.html";
+		// Serialize the data as a query parameter
+		const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
+	
+		// Navigate to the new HTML page with the data as a query parameter
+		window.location.href = `gantt.html?data=${dataQueryParam}`;
 	}
-    
   }
 
   return (

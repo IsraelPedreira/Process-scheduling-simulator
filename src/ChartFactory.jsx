@@ -5,8 +5,9 @@ import SJF from "./sched/SJF";
 import RR from "./sched/RR";
 import EDF from "./sched/EDF";
 import Convert from "./utils";
+import { render } from "react-dom";
 
-export function ChartFactory({ data_from_menu }) {
+function ChartFactory({ data_from_menu }) {
   // Simulado os dados que virao do menu
   // const data_from_menu = [
   //   {
@@ -120,9 +121,7 @@ export function ChartFactory({ data_from_menu }) {
     }
     setTotalTurnaround(final_turnaround.toFixed(2));
     
-    console.log("raw data to chart passed is", FIFO_data) // FIXME REMOVE
     let chartData = Convert(FIFO_data);
-    console.log("chartData to chart passed is", chartData) // FIXME REMOVE
     chart_animation(chartData);
   }, []);
  
@@ -174,7 +173,6 @@ export function ChartFactory({ data_from_menu }) {
 
   // useEffect(() => {
   //   // TODO use if-else clauses to choose sched algorithm
-  //   console.log("raw data from menu is", data_from_menu)
   //  // FIXME REMOVE
   //   let menuData = EDF(data_from_menu);
     
@@ -186,3 +184,12 @@ export function ChartFactory({ data_from_menu }) {
 
   return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const rootElement = document.getElementById("gantt-root");
+  const queryParams = new URLSearchParams(window.location.search);
+  const dataQueryParam = queryParams.get("data");
+  const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
+  
+  render(<ChartFactory data_from_menu={data} />, rootElement);
+});

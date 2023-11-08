@@ -67,7 +67,6 @@ export default function RR(data) {
         }
       }
     }
-    //console.log(processedData);
     return processedData;
   }
   
