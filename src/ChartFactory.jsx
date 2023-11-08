@@ -7,38 +7,38 @@ import EDF from "./sched/EDF";
 import Convert from "./utils";
 import { render } from "react-dom";
 
-function ChartFactory({ data_from_menu }) {
+function ChartFactory({ data_from_menu, mode }) {
   // Simulado os dados que virao do menu
   // const data_from_menu = [
   //   {
   //     id: 1,
   //     arrival_time: 2,
-  //     execution_time: 2
+  //     duration: 2
   //   },
   //   {
   //     id: 2,
   //     arrival_time: 3,
-  //     execution_time: 2
+  //     duration: 2
   //   },
   //   {
   //     id: 3,
   //     arrival_time: 3,
-  //     execution_time: 7
+  //     duration: 7
   //   },
   //   {
   //     id: 4,
   //     arrival_time: 4,
-  //     execution_time: 7
+  //     duration: 7
   //   },
   //   {
   //     id: 5,
   //     arrival_time: 4,
-  //     execution_time: 12
+  //     duration: 12
   //   },
   //   {
   //     id: 6,
   //     arrival_time: 3,
-  //     execution_time: 5
+  //     duration: 5
   //   }
   // ];
 
@@ -98,90 +98,46 @@ function ChartFactory({ data_from_menu }) {
 
   // Roda quando a pagina carrega e faz a rotina de
   // converter chamar o FIFO nos dados e chamar 
-  // animacao 
-  useEffect(() => {
-    let FIFO_data = FIFO(data_from_menu);
+  // animacao
 
-    let turnarounds = []
-    // let turnarounds = FIFO_data.reduce((soma, process) => {
-    //   if(process.pid != "Chaveamento"){
-    //     return soma + process.duration;
-    //   }
-    //   return soma
-    // }, data_from_menu[0].arrival_time)
-    let acc = data_from_menu[0].arrival_time
-    for (const process of data_from_menu){
-      acc += process.duration
-      turnarounds.push(acc - process.arrival_time)
-    }
-
-    let final_turnaround = 0.0
-    for (const tt of turnarounds){
-      final_turnaround += tt / turnarounds.length
-    }
-    setTotalTurnaround(final_turnaround.toFixed(2));
-    
-    let chartData = Convert(FIFO_data);
-    chart_animation(chartData);
-  }, []);
- 
-
-  //Roda quando a pagina carrega e faz a rotina de
-  //  converter chamar o SJF nos dados e chamar 
-  //  animacao 
-  // useEffect(() => {
-  //   let SJF_data = SJF(data_from_menu);
-  //   //RR(data_from_menu2);
-
-  //   let turnarounds = SJF_data.reduce((soma, process) => {
-  //     if(process.id != "Chaveamento"){
-  //       return soma + calculateTurnaround(process);
-  //     }
-  //     return soma
-  //   }, 0)
-
-  //   turnarounds = turnarounds / (data_from_menu.length);
-  //   setTotalTurnaround(turnarounds.toFixed(2));
-
-  //   let chartData = Convert(SJF_data);
-  //   chart_animation(chartData);
-  // }, []);
+  const useEffectFactory = (sched) => {
+    return useEffect(() => {
+      let sched_data = sched(data_from_menu);
   
-
+      let turnarounds = []
+      // let turnarounds = FIFO_data.reduce((soma, process) => {
+      //   if(process.pid != "Chaveamento"){
+      //     return soma + process.duration;
+      //   }
+      //   return soma
+      // }, data_from_menu[0].arrival_time)
+      let acc = data_from_menu[0].arrival_time
+      for (const process of data_from_menu){
+        acc += process.duration
+        turnarounds.push(acc - process.arrival_time)
+      }
   
+      let final_turnaround = 0.0
+      for (const tt of turnarounds){
+        final_turnaround += tt / turnarounds.length
+      }
+      setTotalTurnaround(final_turnaround.toFixed(2));
+      
+      let chartData = Convert(sched_data);
+      chart_animation(chartData);
+    }, []);
+  }
 
-  // useEffect(() => {
-  //   let RR_data = RR(data_from_menu2);
-
-  //     // Calcula o turnaround para cada processo
-  //   const turnarounds = RR_data.map(process => calculateTurnaround(process));
-    
-  //   // Calcula o turnaround médio total
-  //   let totalTurnaround = turnarounds.reduce((total, turnaround) => {
-  //     if(turnaround){
-  //       return total + turnaround
-  //     }
-  //     return total    
-  //   }, 0) ;
-
-  //   totalTurnaround = (totalTurnaround / (data_from_menu2.length - 1)).toFixed(2);
-  //   setTotalTurnaround(totalTurnaround);
-
-  //   let chartData = Convert(RR_data);
-  //   chart_animation(chartData);
-  // }, []);
-
-  // useEffect(() => {
-  //   // TODO use if-else clauses to choose sched algorithm
-  //  // FIXME REMOVE
-  //   let menuData = EDF(data_from_menu);
-    
-  //   let chartData = Convert(menuData);
-   
-  //   chart_animation(chartData);
-
-  //  }, []);
-
+  if (mode == "FIFO") {
+    useEffectFactory(FIFO)
+  } else if (mode == "SJF") {
+    useEffectFactory(SJF)
+  } else if (mode == "EDF") {
+    useEffectFactory(EDF)
+  } else if (mode == "RR") {
+    useEffectFactory(RR)
+  }
+  
   return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }
 
@@ -189,7 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const rootElement = document.getElementById("gantt-root");
   const queryParams = new URLSearchParams(window.location.search);
   const dataQueryParam = queryParams.get("data");
+  const mode = queryParams.get("mode");
   const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
   
-  render(<ChartFactory data_from_menu={data} />, rootElement);
+  render(<ChartFactory data_from_menu={data} mode={mode} />, rootElement);
 });

@@ -44,12 +44,32 @@ export function ProcessForm(props) {
     deadline: '',
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+  }
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader()
+
+    reader.onload = (event) => {
+      const content = event.target.result;
+      // parse as JSON
+      const parsedContent = JSON.parse(content);
+      props.updateProcessTable(parsedContent);
+    }
+    try {
+      reader.readAsText(file)
+      setSelectedFile(file)
+    } catch (error) {
+      alert("Invalid file format: pass valid JSON file")
+    }
   }
 
   const handleAddProcess = (event) => {
@@ -73,18 +93,21 @@ export function ProcessForm(props) {
     props.updateProcessTable(_updated);
   }
 
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-	if (!props.processTable){
-		alert("Erro: informe pelo menos um processo");
-	} else {
-		// Serialize the data as a query parameter
-		const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
-	
-		// Navigate to the new HTML page with the data as a query parameter
-		window.location.href = `gantt.html?data=${dataQueryParam}`;
+  const handleOnSubmitFactory = (mode) => {
+	const handleOnSubmitMode = (event) => {
+		event.preventDefault();
+		if (!props.processTable){
+			alert("Erro: informe pelo menos um processo");
+		} else {
+			// Serialize the data as a query parameter
+			const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
+		
+			// Navigate to the new HTML page with the data as a query parameter
+			window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}`;
+		}
 	}
-  }
+	return handleOnSubmitMode 
+  } 
 
   return (
     <div className="process-form-container">
@@ -142,7 +165,13 @@ export function ProcessForm(props) {
         </div>
         <div className="exit-buttons">
           <button onClick={handleAddProcess} type="submit">Adicionar</button>
-          <button onClick={handleOnSubmit} type="submit">Mostrar</button>
+          <button onClick={handleOnSubmitFactory("FIFO")} type="submit">FIFO</button>
+          <button onClick={handleOnSubmitFactory("SJF")} type="submit">SJF</button>
+          <button onClick={handleOnSubmitFactory("EDF")} type="submit">EDF</button>
+          <button onClick={handleOnSubmitFactory("RR")} type="submit">RR</button>
+        </div>
+        <div className="file-submit">
+          <input type="file" accept=".json" onChange={handleFileChange}></input>
         </div>
       </form>
     </div>

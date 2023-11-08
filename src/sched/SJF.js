@@ -1,7 +1,7 @@
 export default function SJF(data) {
     const sortedData = [...data];
   
-    sortedData.sort((a, b) => a.execution_time - b.execution_time);
+    sortedData.sort((a, b) => a.duration - b.duration);
     let first_free_start_time = 0;
   
     sortedData.forEach((objeto) => {
