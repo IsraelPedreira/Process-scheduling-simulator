@@ -6,7 +6,7 @@ import { ProcessForm } from './ProcessForm.jsx'
 import { ProcessList } from './ProcessList.jsx'
 
 const safeEquality = (table1, table2) => {
-	let equal = true
+	let equal = true;
 	if (table1.length !== table2.length){
 		return false
 	} else {
@@ -22,22 +22,25 @@ const safeEquality = (table1, table2) => {
 }
 
 function EntryPage() {
-    const [processTable, updateProcessTable] = useState([]);
-		// read cache
-		if (safeEquality(processTable, JSON.parse(sessionStorage.getItem("process_table"))) === false){
-			const cached_process_table = JSON.parse(sessionStorage.getItem("process_table"))
-			updateProcessTable(cached_process_table)
-		}
-    return (
-		<div className="entry">
-		  <div className="entry-form">
-			  <ProcessForm processTable={processTable} updateProcessTable={updateProcessTable}/> {/* Render the ProcessForm component here */}
-      </div>
-        <div className="entry-list">
-          <ProcessList processTable={processTable}/>
-        </div>
-		 </div>
-    );
+	const [processTable, updateProcessTable] = useState([]);
+	if (sessionStorage.getItem("process_table") === null){
+		sessionStorage.setItem("process_table", JSON.stringify(processTable))
+	}
+	// read cache
+	if (safeEquality(processTable, JSON.parse(sessionStorage.getItem("process_table"))) === false){
+		const cached_process_table = JSON.parse(sessionStorage.getItem("process_table"))
+		updateProcessTable(cached_process_table)
+	}
+	return (
+	<div className="entry">
+		<div className="entry-form">
+			<ProcessForm processTable={processTable} updateProcessTable={updateProcessTable}/> {/* Render the ProcessForm component here */}
+		</div>
+			<div className="entry-list">
+				<ProcessList processTable={processTable}/>
+			</div>
+	 </div>
+	);
 }
 
 ReactDOM.createRoot(document.getElementById('entry-root')).render(
