@@ -63,6 +63,8 @@ export function ProcessForm(props) {
       // parse as JSON
       const parsedContent = JSON.parse(content);
       props.updateProcessTable(parsedContent);
+			// cache it!
+			sessionStorage.setItem("process_table", JSON.stringify(parsedContent));
     }
     try {
       reader.readAsText(file)
@@ -89,8 +91,18 @@ export function ProcessForm(props) {
     // }
 
     console.log('Form data submitted:', formData);
-	const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
+		const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
     props.updateProcessTable(_updated);
+		// cache it!
+		sessionStorage.setItem("process_table", JSON.stringify(_updated));
+		// reset form
+		setFormData({
+			pid: '',
+			arrival_time: '',
+			duration: '',
+			priority: '',
+			deadline: '',
+		});
   }
 
   const handleOnSubmitFactory = (mode) => {
@@ -173,6 +185,9 @@ export function ProcessForm(props) {
         <div className="file-submit">
           <input type="file" accept=".json" onChange={handleFileChange}></input>
         </div>
+				<div className="clear-button">
+					<button onClick={() => {props.updateProcessTable([]); sessionStorage.setItem("process_table", JSON.stringify([]))}} type="submit">Limpar</button>
+				</div>
       </form>
     </div>
   );
