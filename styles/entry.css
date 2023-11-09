@@ -1,6 +1,8 @@
 /* style the background and body */
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Roboto&display=swap');
 body {
-	background-color: #FAFAFA;
+	background-color: #ECE3CE;
+  font-family: 'Nunito', Courier, monospace;
 }
 
 /* style the entry containers */
