@@ -89,6 +89,10 @@ body {
 	/* separate the buttons horizontally only */
 }
 
+.exit-buttons > * {
+  margin-right: 10px;
+}
+
 
 /* Lista de processos */
 .process-list {

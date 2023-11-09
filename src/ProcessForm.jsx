@@ -81,6 +81,14 @@ export function ProcessForm(props) {
     sessionStorage.setItem("process_table", JSON.stringify(sessionProcessTable));
   }
 
+  const handleOnClear = (event) => {
+    event.preventDefault();
+    console.log("processTable cleared!");
+
+    props.updateProcessTable([]);
+    sessionStorage.removeItem("process_table")
+  }
+
   const handleOnSubmit = (event) => {
     event.preventDefault();
     console.log("final process table is", sessionStorage.getItem("process_table"));
@@ -143,7 +151,8 @@ export function ProcessForm(props) {
         </div>
         <div className="exit-buttons">
           <button onClick={handleAddProcess} type="submit">Adicionar</button>
-          <button onClick={handleOnSubmit} type="submit">Mostrar</button>
+          <button onClick={handleOnClear} type="submit">Limpar Lista</button>
+          <button onClick={handleOnSubmit} type="submit" style ={{marginRight: 0}}>Executar</button>
         </div>
       </form>
     </div>
