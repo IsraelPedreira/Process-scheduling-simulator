@@ -146,7 +146,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const queryParams = new URLSearchParams(window.location.search);
   const dataQueryParam = queryParams.get("data");
   const mode = queryParams.get("mode");
+  const quantum = queryParams.get("quantum");
+  const switchCost = queryParams.get("switchCost");
   const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
+
+  if (!data[0]['quantum'] && (mode == "RR" || mode == 'EDF') ){
+    data.unshift({'quantum': Number(quantum), 'preemption': Number(switchCost)})
+  }
   
   render(<ChartFactory data_from_menu={data} mode={mode} />, rootElement);
 });
