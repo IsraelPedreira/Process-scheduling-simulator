@@ -66,8 +66,8 @@ export function ProcessForm(props) {
       // parse as JSON
 			try {
 				const parsedContent = JSON.parse(content);
-				const pids = parsedContent.map((process) => process.pid);
-				if (parsedContent.length > 8){
+				const pids = parsedContent["process_table"].map((process) => process.pid);
+				if (pids.length > 8){
 					alert("O limite máximo de processos são 8.");
 					return;
 				} else if ((new Set(pids)).size !== pids.length){
@@ -76,8 +76,12 @@ export function ProcessForm(props) {
 					return;
 				}
 				props.updateProcessTable(parsedContent);
+				props.setQuantum(parsedContent["quantum"]);
+				props.setSwitchCost(parsedContent["switch_cost"]);
 				// cache it!
-				sessionStorage.setItem("process_table", JSON.stringify(parsedContent));
+				sessionStorage.setItem("process_table", JSON.stringify(parsedContent["process_table"]));
+				sessionStorage.setItem("quantum", parsedContent["quantum"]);
+				sessionStorage.setItem("switch_cost", parsedContent["switch_cost"]);
 			} catch (error) {
 				alert("Formato inválido: forneça um arquivo JSON válido.")
 				return;
