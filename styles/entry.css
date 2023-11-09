@@ -1,0 +1,26 @@
+/* style the background and body */
+body {
+	background-color: #FAFAFA;
+}
+
+/* style the entry containers */
+#entry-root {
+	width: 100%;
+}
+.entry{
+  padding: 2%;
+  display: flex;
+  align-items: center;
+}
+.entry-form{
+  flex: 1;
+  padding:20px;
+}
+
+
+.entry-list{
+  flex: 1;
+  padding:20px;
+}
+
+/* style the entry footer position */

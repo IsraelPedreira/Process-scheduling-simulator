@@ -1,0 +1,52 @@
+/* Lista de processos */
+
+.process-list h2
+{
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.process-list {
+  min-height: 300px;
+  max-height: 50%;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #CCE;
+}
+
+.list {
+  display: grid;
+  padding: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+}
+
+.list >* {
+  margin-bottom: 15px;
+  list-style: none;
+}
+
+.process {
+  background-color: white;
+  padding: 10px;
+  max-width: 150px;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+}
+.process-identification {
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.process-description-container {
+  width: 150px;
+}
+
+.process-description-table {
+  width: 150px;
+}

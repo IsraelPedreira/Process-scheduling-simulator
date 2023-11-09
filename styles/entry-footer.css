@@ -1,0 +1,27 @@
+.process-footer {
+	/* put children in a row */
+	display: flex;
+	justify-content: space-between;
+}
+
+/* .process-footer-quantum, .process-footer-switchCost { */
+/*   margin-left: 5%; */
+/*   margin-right: 5%; */
+/* }  */
+
+.process-footer-quantum {
+	margin-left: 5%;
+	text-align: left;
+}
+.process-footer-switchCost {
+	margin-right: 5%;
+	text-align: right;
+}
+
+.process-footer-quantum, .process-footer-switchCost {
+  background-color: #CCE;
+	padding: 2%;
+	border-radius: 10%;
+	font-style: bold;
+}
+

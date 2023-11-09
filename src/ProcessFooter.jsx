@@ -16,10 +16,10 @@ export function ProcessFooter(props) {
 	return (
 		<div className="process-footer">
 			<div className="process-footer-quantum">
-				{quantumText}
+				<strong> {quantumText} </strong>
 			</div>
 			<div className="process-footer-switchCost">
-				{switchCostText}
+				<strong> {switchCostText} </strong>
 			</div>
 		</div>
 	)

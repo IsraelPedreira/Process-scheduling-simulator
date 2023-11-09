@@ -211,7 +211,7 @@ export function ProcessForm(props) {
             onChange={handleChange}
           />
         </div>
-				<div id="quantumEntry">
+				<div className="quantumEntry">
 					<label htmlFor="quantum">Quantum:</label>
 					<input
 						type="text"
@@ -222,7 +222,7 @@ export function ProcessForm(props) {
 					/>
 					<button onClick={handleSetQuantum}>Confirmar</button>
 				</div>
-				<div id="switchCostEntry">
+				<div className="switchCostEntry">
 					<label htmlFor="switchCost">Sobrecarga de Chaveamento:</label>
 					<input
 						type="text"
