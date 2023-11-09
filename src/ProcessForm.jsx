@@ -45,10 +45,9 @@ export function ProcessForm(props) {
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
-	const [tempQuantum, setTempQuantum] = useState(null);
-	const [tempSwitchCost, setTempSwitchCost] = useState(null);
-	const [quantum, setQuantum] = useState(null);
-	const [switchCost, setSwitchCost] = useState(null);
+	// particular to processForm, since it represents unsubmitted quantum and swithcost values
+	const [tempQuantum, setTempQuantum] = useState("");
+	const [tempSwitchCost, setTempSwitchCost] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -120,12 +119,22 @@ export function ProcessForm(props) {
 		});
   }
 
+	const handleSetQuantum = () => {
+		props.setQuantum(tempQuantum);
+		sessionStorage.setItem("quantum", tempQuantum);
+	}
+
+	const handleSetSwitchCost = () => {
+		props.setSwitchCost(tempSwitchCost);
+		sessionStorage.setItem("switch_cost", tempSwitchCost);
+	}
+
   const handleOnSubmitFactory = (mode) => {
 		const handleOnSubmitMode = (event) => {
 			event.preventDefault();
 			if (!props.processTable){
 				alert("Erro: informe pelo menos um processo");
-			} else if ((quantum === null || switchCost === null) && (mode == "EDF" || mode == "RR")) {
+			} else if ((!props.quantum || !props.switchCost) && (mode == "EDF" || mode == "RR")) {
 				alert(`Erro: para visualizar o algoritmo de escalonamento ${mode} informe o quantum e a sobrecarga de chaveamento.`);	
 			} else {
 				// Serialize the data as a query parameter
@@ -204,10 +213,10 @@ export function ProcessForm(props) {
 						type="text"
 						id="quantum"
 						name="quantum"
-						value={quantum}
+						value={tempQuantum}
 						onChange={(event) => setTempQuantum(event.target.value)}
 					/>
-					<button onClick={() => setQuantum(tempQuantum)}>Confirmar</button>
+					<button onClick={handleSetQuantum}>Confirmar</button>
 				</div>
 				<div id="switchCostEntry">
 					<label htmlFor="switchCost">Sobrecarga de Chaveamento:</label>
@@ -215,10 +224,10 @@ export function ProcessForm(props) {
 						type="text"
 						id="switchCost"
 						name="switchCost"
-						value={switchCost}
+						value={tempSwitchCost}
 						onChange={(event) => setTempSwitchCost(event.target.value)}
 					/>
-					<button onClick={() => setSwitchCost(tempSwitchCost)}>Confirmar</button>
+					<button onClick={handleSetSwitchCost}>Confirmar</button>
 				</div>
         <div className="exit-buttons">
           <button onClick={handleAddProcess} type="submit">Adicionar</button>
