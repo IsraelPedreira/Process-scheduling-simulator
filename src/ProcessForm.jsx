@@ -44,6 +44,8 @@ export function ProcessForm(props) {
     deadline: '',
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -52,12 +54,29 @@ export function ProcessForm(props) {
     });
   }
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader()
+
+    reader.onload = (event) => {
+      const content = event.target.result;
+      // parse as JSON
+      const parsedContent = JSON.parse(content);
+      props.updateProcessTable(parsedContent);
+			// cache it!
+			sessionStorage.setItem("process_table", JSON.stringify(parsedContent));
+    }
+    try {
+      reader.readAsText(file)
+      setSelectedFile(file)
+    } catch (error) {
+      alert("Invalid file format: pass valid JSON file")
+    }
+  }
+
   const handleAddProcess = (event) => {
     event.preventDefault();
-    let sessionProcessTable = sessionStorage.getItem("process_table") !== null
-        ? JSON.parse(sessionStorage.getItem("process_table"))
-        : props.processTable;
-
+    
     if (props.processTable.length >= 8) {
       alert("O limite máximo de processos são 8.");
       return;
@@ -68,31 +87,41 @@ export function ProcessForm(props) {
         return;
     }
 
-    for (const key in formData) {
-      const value = formData[key];
-    //   if (isNaN(value) || parseInt(Number(value)) !== value) {
-    //     alert("Please enter a number for " + key);
-    //     return;
-    //   }
-    }
-
     console.log('Form data submitted:', formData);
-    props.updateProcessTable(AddProcess(sessionProcessTable, ...Object.values(formData).map(x => parseInt(x))));
-    sessionStorage.setItem("process_table", JSON.stringify(sessionProcessTable));
+		const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
+    props.updateProcessTable(_updated);
+		// cache it!
+		sessionStorage.setItem("process_table", JSON.stringify(_updated));
+		// reset form
+		setFormData({
+			pid: '',
+			arrival_time: '',
+			duration: '',
+			priority: '',
+			deadline: '',
+		});
   }
 
+  const handleOnSubmitFactory = (mode) => {
+	const handleOnSubmitMode = (event) => {
+		event.preventDefault();
+		if (!props.processTable){
+			alert("Erro: informe pelo menos um processo");
+		} else {
+			// Serialize the data as a query parameter
+			const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
+		
+			// Navigate to the new HTML page with the data as a query parameter
+			window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}`;
+		}
+	}
+	return handleOnSubmitMode 
+  }
   const handleOnClear = (event) => {
     event.preventDefault();
-    console.log("processTable cleared!");
 
     props.updateProcessTable([]);
     sessionStorage.removeItem("process_table")
-  }
-
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-    console.log("final process table is", sessionStorage.getItem("process_table"));
-    window.location.href = "gantt.html";
   }
 
   return (
@@ -151,9 +180,17 @@ export function ProcessForm(props) {
         </div>
         <div className="exit-buttons">
           <button onClick={handleAddProcess} type="submit">Adicionar</button>
-          <button onClick={handleOnClear} type="submit">Limpar Lista</button>
-          <button onClick={handleOnSubmit} type="submit" style ={{marginRight: 0}}>Executar</button>
+          <button onClick={handleOnSubmitFactory("FIFO")} type="submit">FIFO</button>
+          <button onClick={handleOnSubmitFactory("SJF")} type="submit">SJF</button>
+          <button onClick={handleOnSubmitFactory("EDF")} type="submit">EDF</button>
+          <button onClick={handleOnSubmitFactory("RR")} type="submit">RR</button>
         </div>
+        <div className="file-submit">
+          <input type="file" accept=".json" onChange={handleFileChange}></input>
+        </div>
+				<div className="clear-button">
+					<button onClick={handleOnClear} type="submit">Limpar</button>
+				</div>
       </form>
     </div>
   );

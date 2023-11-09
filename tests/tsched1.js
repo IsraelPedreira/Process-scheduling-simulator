@@ -1,10 +1,21 @@
-// import process_table from "../src/process.js";
-// import AddProcess from "../src/process.js";
-// import FIFO from "../src/process.js";
-// import SJF from "../src/process.js";
-import {AddProcess, FIFO, SJF, EDF, RoundRobin} from "../src/sched/process.js";
+import FIFO from "../src/sched/FIFO.js"
+import SJF from "../src/sched/SJF.js"
+import EDF from "../src/sched/EDF.js"
+import RR from "../src/sched/RR.js"
+
+// import { FIFO, SJF, EDF, RoundRobin as RR } from "../src/sched/process.js"
 
 const process_table = []
+function AddProcess(process_table, pid, arrival_time, duration, priority, deadline){
+	process_table.push({
+		"pid": pid,
+		"arrival_time": arrival_time,
+		"duration": duration,
+		"priority": priority,
+		"deadline": deadline
+	})
+	return process_table
+}
 
 function generateRandomProcessData(count, maxArrivalTime=10, maxDuration=5, maxDeadline=30, maxPriority=5) {
   const processes = [];
@@ -63,6 +74,6 @@ const edf_result = EDF(process_table)
 console.log("EDF result:")
 console.log(edf_result)
 // Run the Round Robin algorithm
-const rr_result = RoundRobin(process_table, 2)
+const rr_result = RR(process_table, 2)
 console.log("RR result:")
 console.log(rr_result)

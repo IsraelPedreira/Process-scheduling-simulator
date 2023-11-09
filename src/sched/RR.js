@@ -16,12 +16,12 @@ export default function RR(data) {
       }
   
       // sortedData[0] e o processo que esta em primeiro na fila de espera
-      if (sortedData[0].execution_time >= quantum) {
-        sortedData[0].execution_time -= quantum;
+      if (sortedData[0].duration >= quantum) {
+        sortedData[0].duration -= quantum;
         completed_time = quantum;
       } else {
-        completed_time = sortedData[0].execution_time;
-        sortedData[0].execution_time = 0;
+        completed_time = sortedData[0].duration;
+        sortedData[0].duration = 0;
       }
   
       // Cria uma copia do processo atual pra agregar informacoes necessarias para o array de retorno da funcao
@@ -45,15 +45,15 @@ export default function RR(data) {
       let preemptionProcess = { ...newProcessToManipulate };
       preemptionProcess.id = "Chaveamento";
       preemptionProcess.start_time = newProcessToManipulate.end_time;
-      preemptionProcess.execution_time = preemption;
+      preemptionProcess.duration = preemption;
       preemptionProcess.end_time =
-        preemptionProcess.start_time + preemptionProcess.execution_time;
+        preemptionProcess.start_time + preemptionProcess.duration;
   
       // Adiciona o processo no array de retorno da funcao
       processedData.push(newProcessToManipulate);
   
       // Remove e adiciona novamente o processo atual com novo arrival_time;
-      if (sortedData[0].execution_time === 0) {
+      if (sortedData[0].duration === 0) {
         sortedData.shift();
       } else {
         let currentProcess = { ...sortedData[0] };
@@ -67,7 +67,6 @@ export default function RR(data) {
         }
       }
     }
-    //console.log(processedData);
     return processedData;
   }
   

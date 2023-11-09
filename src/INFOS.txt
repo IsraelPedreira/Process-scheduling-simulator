@@ -3,31 +3,31 @@ processos = [
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 	}
 
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 	}
 
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 	}
 
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 	}
 
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 	}
 ]
 
@@ -36,7 +36,7 @@ processos = [
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 		start_time: 0
 		end_time: 0
 	}
@@ -44,7 +44,7 @@ processos = [
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 		start_time: 0
 		end_time: 0
 	}
@@ -52,7 +52,7 @@ processos = [
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 		start_time: 0
 		end_time: 0
 	}
@@ -60,7 +60,7 @@ processos = [
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 		start_time: 0
 		end_time: 0
 	}
@@ -68,7 +68,7 @@ processos = [
 	{
 		id:
 		arrival_time:
-		execution_time:
+		duration:
 		start_time: 0
 		end_time: 0
 	}

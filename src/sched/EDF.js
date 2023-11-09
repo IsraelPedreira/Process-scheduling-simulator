@@ -1,4 +1,4 @@
-export default function RR(data) {
+export default function EDF(data) {
     const infos = data[0];
     const preemption = infos.preemption;
     const quantum = infos.quantum;
@@ -67,7 +67,6 @@ export default function RR(data) {
         }
       }
     }
-    console.log(processedData);
     return processedData;
   }
   
