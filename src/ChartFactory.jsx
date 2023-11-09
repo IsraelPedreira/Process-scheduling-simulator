@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { ChartComponent } from "./Chart";
-import FIFO from "./sched/FIFO";
-import SJF from "./sched/SJF";
-import RR from "./sched/RR";
-import EDF from "./sched/EDF";
+// import FIFO from "./sched/FIFO";
+// import SJF from "./sched/SJF";
+// import RR from "./sched/RR";
+// import EDF from "./sched/EDF";
+import { FIFO, SJF, EDF, RoundRobin as RR } from "./sched/process";
 import Convert from "./utils";
 import { render } from "react-dom";
 
-function ChartFactory({ data_from_menu, mode }) {
+function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
   // Simulado os dados que virao do menu
   // const data_from_menu = [
   //   {
@@ -100,10 +101,19 @@ function ChartFactory({ data_from_menu, mode }) {
   // converter chamar o FIFO nos dados e chamar 
   // animacao
 
-  const useEffectFactory = (sched) => {
+  const useEffectFactory = (mode) => {
     return useEffect(() => {
-      let sched_data = sched(data_from_menu);
-  
+			let sched_data = null;
+			if (mode == "FIFO") {
+				sched_data = FIFO(data_from_menu);
+			} else if (mode == "SJF") {
+				sched_data = SJF(data_from_menu);
+			} else if (mode == "EDF") {
+				sched_data = EDF(data_from_menu, quantum, switchCost);
+			} else if (mode == "RR") {
+				sched_data = RR(data_from_menu, quantum, switchCost);
+			}
+
       let turnarounds = []
       // let turnarounds = FIFO_data.reduce((soma, process) => {
       //   if(process.pid != "Chaveamento"){
@@ -128,16 +138,18 @@ function ChartFactory({ data_from_menu, mode }) {
     }, []);
   }
 
-  if (mode == "FIFO") {
-    useEffectFactory(FIFO)
-  } else if (mode == "SJF") {
-    useEffectFactory(SJF)
-  } else if (mode == "EDF") {
-    useEffectFactory(EDF)
-  } else if (mode == "RR") {
-    useEffectFactory(RR)
-  }
+  // if (mode == "FIFO") {
+  //   useEffectFactory(FIFO)
+  // } else if (mode == "SJF") {
+  //   useEffectFactory(SJF)
+  // } else if (mode == "EDF") {
+  //   useEffectFactory(EDF)
+  // } else if (mode == "RR") {
+  //   useEffectFactory(RR)
+  // }
   
+	useEffectFactory(mode)
+
   return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }
 
@@ -146,13 +158,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const queryParams = new URLSearchParams(window.location.search);
   const dataQueryParam = queryParams.get("data");
   const mode = queryParams.get("mode");
-  const quantum = queryParams.get("quantum");
-  const switchCost = queryParams.get("switchCost");
+	const quantum = parseInt(Number(queryParams.get("quantum")));
+	const switchCost = parseInt(Number(queryParams.get("switchCost")));
+	console.log("switch cost is", switchCost)
   const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
 
-  if (!data[0]['quantum'] && (mode == "RR" || mode == 'EDF') ){
-    data.unshift({'quantum': Number(quantum), 'preemption': Number(switchCost)})
-  }
-  
-  render(<ChartFactory data_from_menu={data} mode={mode} />, rootElement);
+  render(<ChartFactory data_from_menu={data} mode={mode} quantum={quantum} switchCost={switchCost}/>, rootElement);
 });

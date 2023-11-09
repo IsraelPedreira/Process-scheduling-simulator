@@ -148,13 +148,17 @@ export function ProcessForm(props) {
 				window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&mode=${mode}&data=${dataQueryParam}`;
 			}
 		}
-	return handleOnSubmitMode 
+		return handleOnSubmitMode 
   }
   const handleOnClear = (event) => {
     event.preventDefault();
 
     props.updateProcessTable([]);
+		props.setQuantum("");
+		props.setSwitchCost("");
     sessionStorage.removeItem("process_table")
+    sessionStorage.removeItem("quantum")
+    sessionStorage.removeItem("switch_cost")
   }
 
   return (
