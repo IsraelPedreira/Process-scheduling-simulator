@@ -12,7 +12,7 @@ export const ChartComponent = ({ data, options, turnaround }) => {
         options={options}
       />
 
-      <p>O turnaround é: {turnaround}</p>
+      <p>Turnaround: {turnaround}</p>
     
     </>
   );
