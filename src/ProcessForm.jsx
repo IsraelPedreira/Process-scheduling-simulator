@@ -82,13 +82,10 @@ export function ProcessForm(props) {
       return;
     }
 
-    // for (const key in formData) {
-    //   const value = formData[key];
-    // //   if (isNaN(value) || parseInt(Number(value)) !== value) {
-    // //     alert("Please enter a number for " + key);
-    // //     return;
-    // //   }
-    // }
+    if (props.processTable.find((process) => process.pid == formData.pid)){
+        alert("Um processo de PID " + formData.pid + " já existe")
+        return;
+    }
 
     console.log('Form data submitted:', formData);
 		const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
@@ -119,7 +116,13 @@ export function ProcessForm(props) {
 		}
 	}
 	return handleOnSubmitMode 
-  } 
+  }
+  const handleOnClear = (event) => {
+    event.preventDefault();
+
+    props.updateProcessTable([]);
+    sessionStorage.removeItem("process_table")
+  }
 
   return (
     <div className="process-form-container">
@@ -186,7 +189,7 @@ export function ProcessForm(props) {
           <input type="file" accept=".json" onChange={handleFileChange}></input>
         </div>
 				<div className="clear-button">
-					<button onClick={() => {props.updateProcessTable([]); sessionStorage.setItem("process_table", JSON.stringify([]))}} type="submit">Limpar</button>
+					<button onClick={handleOnClear} type="submit">Limpar</button>
 				</div>
       </form>
     </div>

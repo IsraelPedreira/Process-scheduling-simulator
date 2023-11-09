@@ -1,17 +1,15 @@
 import React from 'react';
 
 export function ProcessList(props) {
-  // if (props.processTable) {
-  //   // OK CONDITION
-  //   props.processTable = JSON.parse(props.processTable)
-  // }
+  let process_table = props.processTable
+
   return (
     <div className="process-list">
     <h2>Processos criados</h2>
-      {props.processTable.length > 0 ?
+      {process_table.length > 0 ?
        <ul className="list">
          {
-             props.processTable.map((process) => (
+             process_table.map((process) => (
                <li key={process.pid}>
                  <div className="process">
                    <div className="process-identification">
