@@ -145,7 +145,12 @@ export function ProcessForm(props) {
 				const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
 			
 				// Navigate to the new HTML page with the data as a query parameter
-				window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}`;
+				if (mode == "EDF" || mode == "RR"){
+					window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}&quantum=${props.quantum}&switch_cost=${props.switchCost}`;
+					return;
+				} else {
+					window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}`;
+				}
 			}
 		}
 	return handleOnSubmitMode 

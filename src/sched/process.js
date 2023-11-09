@@ -46,9 +46,9 @@ class SortedProcessArray{
 	// obj: object to insert
 	push(obj){
 		if (this.array.length == 0){
-			this.array.push(_DeepCopyProcess(obj))
+			this.array.push(obj)
 		} else {
-			this.array.splice(this.findIndex(obj), 0, _DeepCopyProcess(obj))
+			this.array.splice(this.findIndex(obj), 0, obj)
 		}
 	}
 	
@@ -114,7 +114,7 @@ function FIFO(process_table){
     let first_free = 0
     for (let i = 0; i < sorted_table.length; i++){
         let p = sorted_table[i]
-        p.start_time = max(first_free, p.arrival_time)
+        p.start_time = Math.max(first_free, p.arrival_time)
         p.end_time = p.start_time + p.duration
         first_free = p.end_time
     }
@@ -122,7 +122,7 @@ function FIFO(process_table){
 }
 
 /*
-	* Earliest Deadline First (EDF)
+	* Shortest Job First (SJF)
 	* 	Complexity: O(n^2)
 	* 	No preemption
 	*	We will sort by the arrival time and run according to the best duration available 
@@ -162,7 +162,7 @@ function SJF(process_table){
 	* 	We will update each deadline by its arrival time to get the absolute deadline
 	*	We will sort by the absolute deadline and run according to arrival time
 	*/
-function EDF(process_table){
+function _non_preemptive_EDF(process_table){
 	const sorted_by_arrival = new SortedProcessArray((a, b) => {
 		return a.arrival_time < b.arrival_time
 	})
@@ -197,6 +197,71 @@ function EDF(process_table){
 	return edf_table
 }
 
+function EDF(process_table, quantum, switch_cost){
+	const edf_table = []
+	let curr_time = 0
+
+	// sort by arrival_time
+	const sorted_by_arrival = process_table.slice().sort((a, b) => (a.arrival_time > b.arrival_time) ? 1 : -1)
+	// create queue of processes
+	const process_queue = new SortedProcessArray((a, b) => {
+		return a[1].arrival_time + a[1].deadline < b[1].arrival_time + b[1].deadline
+	}) // queue of pairs (remaining duration, process)
+	const not_arrived = new Denque()
+	for (let i = 0; i < sorted_by_arrival.length; i++){
+		not_arrived.push(sorted_by_arrival[i]);
+	}
+
+	while (not_arrived.length > 0 || process_queue.array.length > 0){
+		if (process_queue.array.length == 0){
+			// grab first process that has not yet arrived
+			let new_process = not_arrived.shift()
+			curr_time = new_process.arrival_time
+			process_queue.push([new_process.duration, new_process])
+			continue
+		}
+		let [remaining_duration, process] = process_queue.array[0] // first in, first out
+		process_queue.pop(0)
+		const delta_time = Math.min(remaining_duration, quantum)
+		edf_table.push({
+			"pid": process.pid,
+			"start_time": curr_time,
+			"end_time": curr_time + delta_time,
+			"duration": delta_time,
+			"priority": process.priority,
+			"deadline": process.deadline
+		})
+		// Run process
+		curr_time += delta_time
+		remaining_duration -= delta_time
+		// process all new processes that arrived in the mean time
+		while (not_arrived.length > 0 && not_arrived.peekFront().arrival_time <= curr_time){
+			const new_process = not_arrived.shift()
+			process_queue.push([new_process.duration, new_process])
+		}
+		if (remaining_duration > 0){
+			// put back on queue
+			process_queue.push([remaining_duration, process])
+			edf_table.push({
+				"pid": "Chaveamento", 
+				"start_time": curr_time,
+				"end_time": curr_time + switch_cost,
+				"duration": switch_cost,
+				"priority": -1,
+				"deadline": -1
+			})
+			// run switch
+			curr_time += switch_cost
+		}
+		// put all processes that arrived in the switch interval
+		while (not_arrived.length > 0 && not_arrived.peekFront().arrival_time <= curr_time){
+			const new_process = not_arrived.shift()
+			process_queue.push([new_process.duration, new_process])
+		}
+	}
+	return edf_table
+}
+
 /**
 	* RoundRobin
 	* Complexity: probably something like O(n^2 + (sum of all durations) / q) = O(n^2 + n * max duration / q)
@@ -205,7 +270,7 @@ function EDF(process_table){
 	* 	and processing the sorted_by_arrival array is O(n^2) because of remove operations
 	* Uses npm package denque
 */
-function RoundRobin(process_table, quantum){
+function RoundRobin(process_table, quantum, switch_cost){
 	const rr_table = []
 	let curr_time = 0
 
@@ -226,8 +291,18 @@ function RoundRobin(process_table, quantum){
 			process_queue.push([new_process.duration, new_process])
 			continue
 		}
+		console.log("curr_time: " + curr_time)
 		let [remaining_duration, process] = process_queue.shift() // first in, first out
 		const delta_time = Math.min(remaining_duration, quantum)
+		rr_table.push({
+			"pid": process.pid,
+			"start_time": curr_time,
+			"end_time": curr_time + delta_time,
+			"duration": delta_time,
+			"priority": process.priority,
+			"deadline": process.deadline
+		})
+		// Run process
 		curr_time += delta_time
 		remaining_duration -= delta_time
 		// process all new processes that arrived in the mean time
@@ -238,8 +313,22 @@ function RoundRobin(process_table, quantum){
 		if (remaining_duration > 0){
 			// put back on queue
 			process_queue.push([remaining_duration, process])
+			rr_table.push({
+				"pid": "Chaveamento", 
+				"start_time": curr_time,
+				"end_time": curr_time + switch_cost,
+				"duration": switch_cost,
+				"priority": -1,
+				"deadline": -1
+			})
+			// run switch
+			curr_time += switch_cost
 		}
-		rr_table.push([delta_time, process])
+		// put all processes that arrived in the switch interval
+		while (not_arrived.length > 0 && not_arrived.peekFront().arrival_time <= curr_time){
+			const new_process = not_arrived.shift()
+			process_queue.push([new_process.duration, new_process])
+		}
 	}
 	return rr_table
 }
