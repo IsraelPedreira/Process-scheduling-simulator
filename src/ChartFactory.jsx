@@ -9,7 +9,7 @@ import Convert from "./utils";
 // import { render } from "react-dom";
 import ReactDOM from 'react-dom/client'
 
-function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
+export function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
   // UseState pra o array de guarda as infos do chart
   const [to_chart_data, setToChartData] = useState([]);
   const [totalTurnaround, setTotalTurnaround] = useState(0);
@@ -128,16 +128,4 @@ function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
   return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const rootElement = document.getElementById("gantt-root");
-  const queryParams = new URLSearchParams(window.location.search);
-  const dataQueryParam = queryParams.get("data");
-  const mode = queryParams.get("mode");
-	const quantum = parseInt(Number(queryParams.get("quantum")));
-	const switchCost = parseInt(Number(queryParams.get("switchCost")));
-  const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
-
-  ReactDOM.createRoot(document.getElementById("gantt-root")).render(
-		<ChartFactory data_from_menu={data} mode={mode} quantum={quantum} switchCost={switchCost} />
-	);
-});
+export default ChartFactory;

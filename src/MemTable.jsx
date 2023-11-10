@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client'
 import '../styles/entry.css'
 
+const memory_size = 50; // see specification
+const process_size = 4; // FIXME make it customizable
+
 export function MemTable() {
   const processes = JSON.parse(sessionStorage.getItem("process_table"));
 
   let mem_layout = [];
-  const process_size = 4;
-  const memory_size = 36;
 
   // this is temporary
   processes.forEach((process) => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Chart } from "react-google-charts";
 import MemTable from "./MemTable"
-import "./gantt.css"
+import "../styles/gantt.css"
 
 export const ChartComponent = ({ data, options, turnaround }) => {
   return (
@@ -15,8 +15,6 @@ export const ChartComponent = ({ data, options, turnaround }) => {
         height="400px"
         options={options}
       />
-
-      <MemTable />
     </>
   );
 };
