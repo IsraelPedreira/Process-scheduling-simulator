@@ -24,13 +24,14 @@ import React, { useState, useEffect, Component } from 'react';
 // 	return process_table;
 // }
 
-function AddProcess(process_table, pid, arrival_time, duration, priority, deadline){
+function AddProcess(process_table, pid, arrival_time, duration, priority, deadline, numPages){
 	process_table.push({
 		"pid": pid,
 		"arrival_time": arrival_time,
 		"duration": duration,
 		"priority": priority,
-		"deadline": deadline
+		"deadline": deadline,
+		"numPages": numPages
 	})
 	return process_table
 }
@@ -42,6 +43,7 @@ export function ProcessForm(props) {
     duration: '',
     priority: '',
     deadline: '',
+		numPages: '',
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -108,7 +110,6 @@ export function ProcessForm(props) {
         return;
     }
 
-    console.log('Form data submitted:', formData);
 		const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
     props.updateProcessTable(_updated);
 		// cache it!
@@ -133,10 +134,11 @@ export function ProcessForm(props) {
 		sessionStorage.setItem("switch_cost", tempSwitchCost);
 	}
 
-  const handleOnSubmitFactory = (mode) => {
+  const handleOnSubmitFactory = (schedMode) => {
 		const handleOnSubmitMode = (event) => {
 			event.preventDefault();
-			if (!props.processTable){
+			console.log('Form data submitted:', props.processTable);
+			if (props.processTable.length == 0){
 				alert("Erro: informe pelo menos um processo");
 			} else if ((!props.quantum || !props.switchCost) && (mode == "EDF" || mode == "RR")) {
 				alert(`Erro: para visualizar o algoritmo de escalonamento ${mode} informe o quantum e a sobrecarga de chaveamento.`);	
@@ -145,7 +147,8 @@ export function ProcessForm(props) {
 				const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
 			
 				// Navigate to the new HTML page with the data as a query parameter
-				window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&mode=${mode}&data=${dataQueryParam}`;
+				// TODO MAKE MEMMODE CUSTOMIZABLE
+				window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&schedMode=${schedMode}&memMode=FIFO&data=${dataQueryParam}`;
 			}
 		}
 		return handleOnSubmitMode 
@@ -212,6 +215,16 @@ export function ProcessForm(props) {
             id="deadline"
             name="deadline"
             value={formData.deadline}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="numPages">Número de páginas utilizadas:</label>
+          <input
+            type="text"
+            id="numPages"
+            name="numPages"
+            value={formData.numPages}
             onChange={handleChange}
           />
         </div>

@@ -5,14 +5,18 @@ import { ChartComponent } from "./Chart";
 // import RR from "./sched/RR";
 // import EDF from "./sched/EDF";
 import { FIFO, SJF, EDF, RoundRobin as RR } from "./sched/process";
+import { FIFO as FIFO_MEM } from "./pagination/FIFO";
 import Convert from "./utils";
 // import { render } from "react-dom";
 import ReactDOM from 'react-dom/client'
 
-function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
+export const MEMORY_SIZE = 50; // see specification
+
+export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, switchCost }) {
   // UseState pra o array de guarda as infos do chart
   const [to_chart_data, setToChartData] = useState([]);
   const [totalTurnaround, setTotalTurnaround] = useState(0);
+	const [pageTable, setPageTable] = useState(Array(MEMORY_SIZE).fill("x"));
 
   // Options requeridas pelo Google Chart
   let options = {
@@ -26,14 +30,9 @@ function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
       colorByRowLabel: true,
     },
   }
-  
-
-  // function calculateTurnaround(process) {
-  //   return process.end_time - process.arrival_time;
-  // }
 
   // Funcao que anima o chart
-  async function chart_animation(chartData) {
+  async function chart_animation(chartData, pageTableHistory) {
       chartData.map((processo, index) => {
         if(index > 0){  
           processo[1] = `${processo[3]} - ${processo[4]}`
@@ -45,6 +44,10 @@ function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
     const animationStep = 0.03; // de quanto em quanto a barra vai crescer
   
     for (let i = 0; i < chartData.length; i++) {
+			// update page table
+			const [_, pageTableCurrent] = pageTableHistory[i];
+			setPageTable(pageTableCurrent);
+			// request animation of process i
       await new Promise((resolve) => requestAnimationFrame(resolve)); // Use requestAnimationFrame for smoother animations
 
       let currentData = chartData.slice(0, i + 1);
@@ -64,22 +67,28 @@ function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
     }
   }
 
-  // Roda quando a pagina carrega e faz a rotina de
-  // converter chamar o FIFO nos dados e chamar 
-  // animacao
-
-  const useEffectFactory = (mode) => {
+	// runs only once
+  const useEffectFactory = (schedMode, memMode) => {
     return useEffect(() => {
-			let sched_data = null;
-			if (mode == "FIFO") {
-				sched_data = FIFO(data_from_menu);
-			} else if (mode == "SJF") {
-				sched_data = SJF(data_from_menu);
-			} else if (mode == "EDF") {
-				sched_data = EDF(data_from_menu, quantum, switchCost);
-			} else if (mode == "RR") {
-				sched_data = RR(data_from_menu, quantum, switchCost);
+			let schedData = null;
+			if (schedMode == "FIFO") {
+				schedData = FIFO(data_from_menu);
+			} else if (schedMode == "SJF") {
+				schedData = SJF(data_from_menu);
+			} else if (schedMode == "EDF") {
+				schedData = EDF(data_from_menu, quantum, switchCost);
+			} else if (schedMode == "RR") {
+				schedData = RR(data_from_menu, quantum, switchCost);
 			}
+			let tempPageTable = Array(MEMORY_SIZE).fill("x");
+			let pageTableHistory = [];
+			if (memMode == "FIFO") {
+				pageTableHistory = FIFO_MEM(tempPageTable, (newPageTable) => newPageTable, schedData);
+			} else if (memMode == "LRU") {
+				// TODO implement LRU
+			}
+			// HACK : so that it aligns with the chart, since it needs an extra entry for labels
+			pageTableHistory.unshift([false, Array(MEMORY_SIZE).fill("x")])
 
       let turnarounds = new Map();
 			// init keys
@@ -90,7 +99,7 @@ function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
 				});
 			})
 			// calculate max end time for each process
-			sched_data.forEach((process) => {
+			schedData.forEach((process) => {
 				if (process.pid != "Chaveamento"){
 					const min_time = turnarounds.get(process.pid).min_time;
 					turnarounds.set(
@@ -108,36 +117,14 @@ function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
       }
       setTotalTurnaround(final_turnaround.toFixed(2));
       
-      let chartData = Convert(sched_data);
-      chart_animation(chartData);
+      let chartData = Convert(schedData);
+      chart_animation(chartData, pageTableHistory);
     }, []);
   }
 
-  // if (mode == "FIFO") {
-  //   useEffectFactory(FIFO)
-  // } else if (mode == "SJF") {
-  //   useEffectFactory(SJF)
-  // } else if (mode == "EDF") {
-  //   useEffectFactory(EDF)
-  // } else if (mode == "RR") {
-  //   useEffectFactory(RR)
-  // }
-  
-	useEffectFactory(mode)
+	useEffectFactory(schedMode, memMode)
 
-  return <ChartComponent data={to_chart_data} options={options} turnaround={totalTurnaround} />;
+  return <ChartComponent data={to_chart_data} pageTable={pageTable} options={options} turnaround={totalTurnaround} />;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const rootElement = document.getElementById("gantt-root");
-  const queryParams = new URLSearchParams(window.location.search);
-  const dataQueryParam = queryParams.get("data");
-  const mode = queryParams.get("mode");
-	const quantum = parseInt(Number(queryParams.get("quantum")));
-	const switchCost = parseInt(Number(queryParams.get("switchCost")));
-  const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
-
-  ReactDOM.createRoot(document.getElementById("gantt-root")).render(
-		<ChartFactory data_from_menu={data} mode={mode} quantum={quantum} switchCost={switchCost} />
-	);
-});
+export default ChartFactory;
