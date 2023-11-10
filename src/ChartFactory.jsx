@@ -114,22 +114,30 @@ function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
 				sched_data = RR(data_from_menu, quantum, switchCost);
 			}
 
-      let turnarounds = []
-      // let turnarounds = FIFO_data.reduce((soma, process) => {
-      //   if(process.pid != "Chaveamento"){
-      //     return soma + process.duration;
-      //   }
-      //   return soma
-      // }, data_from_menu[0].arrival_time)
-      let acc = data_from_menu[0].arrival_time
-      for (const process of data_from_menu){
-        acc += process.duration
-        turnarounds.push(acc - process.arrival_time)
-      }
-  
+      let turnarounds = new Map();
+			// init keys
+			data_from_menu.forEach((process) => {
+				turnarounds.set(process.pid, {
+					"min_time": process.arrival_time,
+					"max_time": process.arrival_time
+				});
+			})
+			// calculate max end time for each process
+			sched_data.forEach((process) => {
+				if (process.pid != "Chaveamento"){
+					const min_time = turnarounds.get(process.pid).min_time;
+					turnarounds.set(
+						process.pid,
+						{
+							"min_time": min_time,
+							"max_time": process.end_time
+						}
+					);
+				}
+			})
       let final_turnaround = 0.0
-      for (const tt of turnarounds){
-        final_turnaround += tt / turnarounds.length
+      for (const [_, process_info] of turnarounds){
+        final_turnaround += (process_info.max_time - process_info.min_time) / data_from_menu.length
       }
       setTotalTurnaround(final_turnaround.toFixed(2));
       
@@ -160,7 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const mode = queryParams.get("mode");
 	const quantum = parseInt(Number(queryParams.get("quantum")));
 	const switchCost = parseInt(Number(queryParams.get("switchCost")));
-	console.log("switch cost is", switchCost)
   const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
 
   render(<ChartFactory data_from_menu={data} mode={mode} quantum={quantum} switchCost={switchCost}/>, rootElement);
