@@ -1,0 +1,53 @@
+.turnaround-text {
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+.ram-bg {
+    display: grid;
+    background-color: #CCE;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    align-items: center;
+}
+
+.ram-title {
+    font-size: 20px;
+    padding: 5px 10px 5px 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: white;
+    text-align: center;
+}
+
+.ram {
+    background-color: white;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.ram-list {
+    display: grid;
+    grid-template-columns: repeat(12, 2.2em);
+    grid-gap: 5px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.ram-list > * {
+    list-style: None;
+    font-size: 25px;
+    padding: 2px;
+    max-width: 30px;
+    max-height: 30px;
+    text-align: center;
+    background-color: #BBBBBB;
+}
