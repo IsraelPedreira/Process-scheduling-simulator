@@ -5,7 +5,8 @@ import SJF from "./sched/SJF";
 import RR from "./sched/RR";
 import EDF from "./sched/EDF";
 import Convert from "./utils";
-import { render } from "react-dom";
+// import { render } from "react-dom";
+import ReactDOM from 'react-dom/client'
 
 function ChartFactory({ data_from_menu, mode }) {
   // Simulado os dados que virao do menu
@@ -148,5 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const mode = queryParams.get("mode");
   const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
   
-  render(<ChartFactory data_from_menu={data} mode={mode} />, rootElement);
+  ReactDOM.createRoot(document.getElementById("gantt-root")).render(
+    <ChartFactory data_from_menu={data} mode={mode} />
+  );
 });
