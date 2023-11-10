@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { ChartComponent } from "./Chart";
-// import FIFO from "./sched/FIFO";
-// import SJF from "./sched/SJF";
-// import RR from "./sched/RR";
-// import EDF from "./sched/EDF";
 import { FIFO, SJF, EDF, RoundRobin as RR } from "./sched/process";
 import { FIFO as FIFO_MEM } from "./pagination/FIFO";
+import { calculateTurnaround } from "./sched/turnaround";
 import Convert from "./utils";
-// import { render } from "react-dom";
-import ReactDOM from 'react-dom/client'
 
 export const MEMORY_SIZE = 50; // see specification
 
@@ -16,6 +11,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
   // UseState pra o array de guarda as infos do chart
   const [to_chart_data, setToChartData] = useState([]);
   const [totalTurnaround, setTotalTurnaround] = useState(0);
+	const [totalPageFaults, setTotalPageFaults] = useState(0);
 	const [pageTable, setPageTable] = useState(Array(MEMORY_SIZE).fill("x"));
 
   // Options requeridas pelo Google Chart
@@ -87,35 +83,16 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 			} else if (memMode == "LRU") {
 				// TODO implement LRU
 			}
-			// HACK : so that it aligns with the chart, since it needs an extra entry for labels
+			// NOTE : so that it aligns with the chart, since it needs an extra entry for labels
 			pageTableHistory.unshift([false, Array(MEMORY_SIZE).fill("x")])
 
-      let turnarounds = new Map();
-			// init keys
-			data_from_menu.forEach((process) => {
-				turnarounds.set(process.pid, {
-					"min_time": process.arrival_time,
-					"max_time": process.arrival_time
-				});
-			})
-			// calculate max end time for each process
-			schedData.forEach((process) => {
-				if (process.pid != "Chaveamento"){
-					const min_time = turnarounds.get(process.pid).min_time;
-					turnarounds.set(
-						process.pid,
-						{
-							"min_time": min_time,
-							"max_time": process.end_time
-						}
-					);
-				}
-			})
-      let final_turnaround = 0.0
-      for (const [_, process_info] of turnarounds){
-        final_turnaround += (process_info.max_time - process_info.min_time) / data_from_menu.length
-      }
+			// calculate average turnaround
+			const final_turnaround = calculateTurnaround(data_from_menu, schedData);
       setTotalTurnaround(final_turnaround.toFixed(2));
+
+			// calculate total page faults
+			const final_page_faults = pageTableHistory.filter(([status, _]) => status).length;
+			setTotalPageFaults(final_page_faults);
       
       let chartData = Convert(schedData);
       chart_animation(chartData, pageTableHistory);
@@ -124,7 +101,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 
 	useEffectFactory(schedMode, memMode)
 
-  return <ChartComponent data={to_chart_data} pageTable={pageTable} options={options} turnaround={totalTurnaround} />;
+  return <ChartComponent data={to_chart_data} pageTable={pageTable} options={options} turnaround={totalTurnaround} pageFaults={totalPageFaults}/>;
 }
 
 export default ChartFactory;
