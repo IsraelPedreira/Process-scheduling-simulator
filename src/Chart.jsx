@@ -1,9 +1,13 @@
 import React from "react";
 import { Chart } from "react-google-charts";
+import MemTable from "./MemTable"
+import "./gantt.css"
 
 export const ChartComponent = ({ data, options, turnaround }) => {
   return (
     <>
+      <p className="turnaround-text">Turnaround: {turnaround}</p>
+
       <Chart
         chartType="Timeline"
         data={data}
@@ -12,8 +16,7 @@ export const ChartComponent = ({ data, options, turnaround }) => {
         options={options}
       />
 
-      <p>Turnaround: {turnaround}</p>
-    
+      <MemTable />
     </>
   );
 };

@@ -3,38 +3,42 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import './entry.css'
 
-function MemTable() {
+export function MemTable() {
+  const processes = JSON.parse(sessionStorage.getItem("process_table"));
+
+
+  let mem_layout = [];
+  const process_size = 4;
+  const memory_size = 36;
+
+  // this is temporary
+  processes.forEach((process) => {
+    for (let s = 0; s < process_size; s++){
+      mem_layout.push(process);
+    }
+  })
+
+  let mem_size = memory_size-process_size*processes.length
+
+  for (let i = 0; i < mem_size; i++){
+    mem_layout.push({pid:"x"});
+  }
+
   return (
-	<div className="ramtable">
-	  <div className="ramtable-title">
-        <center>
-          Memória RAM
-        </center>
-	  </div>
-      <table>
-        <thead/>
-        <tbody>
-        <tr>
-          <td>a</td>
-          <td>b</td>
-          <td>c</td>
-        </tr>
-        <tr>
-          <td>d</td>
-          <td>e</td>
-          <td>f</td>
-        </tr>
-        <tr>
-          <td>g</td>
-          <td>h</td>
-          <td>i</td>
-        </tr>
-        </tbody>
-      </table>
+	<div className="ram-bg">
+      <div className="ram-title">
+        Memória RAM
+      </div>
+
+      <ul className="ram-list">
+        {
+          mem_layout.map((process) => (
+            <li key={process.id}>{process.pid}</li>
+          ))
+        }
+      </ul>
 	</div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById('mem-table-root')).render(
-    <MemTable />
-)
+export default MemTable;
