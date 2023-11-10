@@ -238,11 +238,11 @@ export function ProcessForm(props) {
 					<button onClick={handleSetSwitchCost}>Confirmar</button>
 				</div>
         <div className="exit-buttons">
-          <button onClick={handleAddProcess} type="submit">Adicionar</button>
-          <button onClick={handleOnSubmitFactory("FIFO")} type="submit">FIFO</button>
-          <button onClick={handleOnSubmitFactory("SJF")} type="submit">SJF</button>
-          <button onClick={handleOnSubmitFactory("EDF")} type="submit">EDF</button>
-          <button onClick={handleOnSubmitFactory("RR")} type="submit">RR</button>
+          <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
+          <button onClick={handleOnSubmitFactory("FIFO")} className='formButton' type="submit">FIFO</button>
+          <button onClick={handleOnSubmitFactory("SJF")} className='formButton'type="submit">SJF</button>
+          <button onClick={handleOnSubmitFactory("EDF")} className='formButton' type="submit">EDF</button>
+          <button onClick={handleOnSubmitFactory("RR")} className='formButton'type="submit">RR</button>
         </div>
         <div className="file-submit">
           <input type="file" accept=".json" onChange={handleFileChange}></input>

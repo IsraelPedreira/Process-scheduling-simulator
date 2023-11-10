@@ -4,7 +4,7 @@
 {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #333;
+  color: #ECE3CE;
   text-align: center;
 }
 
@@ -15,7 +15,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  background-color: #CCE;
+  background-color: #4F6F52;
 }
 
 .list {

@@ -19,9 +19,10 @@
 }
 
 .process-footer-quantum, .process-footer-switchCost {
-  background-color: #CCE;
+  background-color: #4F6F52;
 	padding: 2%;
-	border-radius: 10%;
+	color: #ECE3CE;
+	border-radius: 10px;
 	font-style: bold;
 }
 
