@@ -45,6 +45,9 @@ export function ProcessForm(props) {
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
+	// particular to processForm, since it represents unsubmitted quantum and swithcost values
+	const [tempQuantum, setTempQuantum] = useState("");
+	const [tempSwitchCost, setTempSwitchCost] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -61,16 +64,34 @@ export function ProcessForm(props) {
     reader.onload = (event) => {
       const content = event.target.result;
       // parse as JSON
-      const parsedContent = JSON.parse(content);
-      props.updateProcessTable(parsedContent);
-			// cache it!
-			sessionStorage.setItem("process_table", JSON.stringify(parsedContent));
+			try {
+				const parsedContent = JSON.parse(content);
+				const pids = parsedContent["process_table"].map((process) => process.pid);
+				if (pids.length > 8){
+					alert("O limite máximo de processos são 8.");
+					return;
+				} else if ((new Set(pids)).size !== pids.length){
+					// duplicate PIDs
+					alert("Erro: PIDs duplicados");
+					return;
+				}
+				props.updateProcessTable(parsedContent);
+				props.setQuantum(parsedContent["quantum"]);
+				props.setSwitchCost(parsedContent["switch_cost"]);
+				// cache it!
+				sessionStorage.setItem("process_table", JSON.stringify(parsedContent["process_table"]));
+				sessionStorage.setItem("quantum", parsedContent["quantum"]);
+				sessionStorage.setItem("switch_cost", parsedContent["switch_cost"]);
+			} catch (error) {
+				alert("Formato inválido: forneça um arquivo JSON válido.")
+				return;
+			}
     }
     try {
       reader.readAsText(file)
       setSelectedFile(file)
     } catch (error) {
-      alert("Invalid file format: pass valid JSON file")
+      alert("Formato inválido: forneça um arquivo JSON válido.")
     }
   }
 
@@ -102,26 +123,42 @@ export function ProcessForm(props) {
 		});
   }
 
-  const handleOnSubmitFactory = (mode) => {
-	const handleOnSubmitMode = (event) => {
-		event.preventDefault();
-		if (!props.processTable){
-			alert("Erro: informe pelo menos um processo");
-		} else {
-			// Serialize the data as a query parameter
-			const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
-		
-			// Navigate to the new HTML page with the data as a query parameter
-			window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}`;
-		}
+	const handleSetQuantum = () => {
+		props.setQuantum(tempQuantum);
+		sessionStorage.setItem("quantum", tempQuantum);
 	}
-	return handleOnSubmitMode 
+
+	const handleSetSwitchCost = () => {
+		props.setSwitchCost(tempSwitchCost);
+		sessionStorage.setItem("switch_cost", tempSwitchCost);
+	}
+
+  const handleOnSubmitFactory = (mode) => {
+		const handleOnSubmitMode = (event) => {
+			event.preventDefault();
+			if (!props.processTable){
+				alert("Erro: informe pelo menos um processo");
+			} else if ((!props.quantum || !props.switchCost) && (mode == "EDF" || mode == "RR")) {
+				alert(`Erro: para visualizar o algoritmo de escalonamento ${mode} informe o quantum e a sobrecarga de chaveamento.`);	
+			} else {
+				// Serialize the data as a query parameter
+				const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
+			
+				// Navigate to the new HTML page with the data as a query parameter
+				window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&mode=${mode}&data=${dataQueryParam}`;
+			}
+		}
+		return handleOnSubmitMode 
   }
   const handleOnClear = (event) => {
     event.preventDefault();
 
     props.updateProcessTable([]);
+		props.setQuantum("");
+		props.setSwitchCost("");
     sessionStorage.removeItem("process_table")
+    sessionStorage.removeItem("quantum")
+    sessionStorage.removeItem("switch_cost")
   }
 
   return (
@@ -178,12 +215,34 @@ export function ProcessForm(props) {
             onChange={handleChange}
           />
         </div>
+				<div className="quantumEntry">
+					<label htmlFor="quantum">Quantum:</label>
+					<input
+						type="text"
+						id="quantum"
+						name="quantum"
+						value={tempQuantum}
+						onChange={(event) => setTempQuantum(event.target.value)}
+					/>
+					<button onClick={handleSetQuantum}>Confirmar</button>
+				</div>
+				<div className="switchCostEntry">
+					<label htmlFor="switchCost">Sobrecarga de Chaveamento:</label>
+					<input
+						type="text"
+						id="switchCost"
+						name="switchCost"
+						value={tempSwitchCost}
+						onChange={(event) => setTempSwitchCost(event.target.value)}
+					/>
+					<button onClick={handleSetSwitchCost}>Confirmar</button>
+				</div>
         <div className="exit-buttons">
-          <button onClick={handleAddProcess} type="submit">Adicionar</button>
-          <button onClick={handleOnSubmitFactory("FIFO")} type="submit">FIFO</button>
-          <button onClick={handleOnSubmitFactory("SJF")} type="submit">SJF</button>
-          <button onClick={handleOnSubmitFactory("EDF")} type="submit">EDF</button>
-          <button onClick={handleOnSubmitFactory("RR")} type="submit">RR</button>
+          <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
+          <button onClick={handleOnSubmitFactory("FIFO")} className='formButton' type="submit">FIFO</button>
+          <button onClick={handleOnSubmitFactory("SJF")} className='formButton'type="submit">SJF</button>
+          <button onClick={handleOnSubmitFactory("EDF")} className='formButton' type="submit">EDF</button>
+          <button onClick={handleOnSubmitFactory("RR")} className='formButton'type="submit">RR</button>
         </div>
         <div className="file-submit">
           <input type="file" accept=".json" onChange={handleFileChange}></input>
