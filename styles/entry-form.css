@@ -1,0 +1,94 @@
+/* Style for the form container */
+.process-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #4F6F52;
+}
+
+/* Style for form headings */
+.process-form-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #ECE3CE;
+  text-align: center;
+}
+
+/* Style for form labels */
+.process-form-container label {
+  display: block;
+  margin-bottom: 6px;
+  color: #ECE3CE;
+  font-weight: bold;
+}
+
+.process-form-container form {
+	margin-right: 15px;
+}
+
+/* Style for form inputs */
+.process-form-container input {
+  color-scheme: light dark;
+  color: rgba(18, 18, 18, 0.87);
+  background-color: #FAFAFA;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+/* Style for the submit button */
+.process-form-container button {
+  background-color: #ECE3CE;
+  color: #000;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 45px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.5s;
+
+	margin-right:	15px;
+	margin-left:	15px;
+	margin-bottom:	15px;
+}
+
+.process-form-container button:hover {
+  filter: brightness(80%);
+}
+
+.exit-buttons {
+	display: flex;
+	justify-content: center;
+  align-items: center;
+	/* separate the buttons horizontally only */
+}
+
+.exit-buttons > * {
+  margin-right: 10px;
+}
+
+/* Style for the delete button */
+.clear-button {
+	/* align the button to the right */
+	position: relative;
+	left: 75%;
+}
+.clear-button button {
+	background-color: #C70039;
+}
+
+/* Style for quantum and switch cost fields */
+.quantumEntry input {
+	width: 60%;
+	margin-right: 5%;
+}
+.switchCostEntry input {
+	width: 60%;
+	margin-right: 5%;
+}

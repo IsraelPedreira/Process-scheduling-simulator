@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client'
-import './index.css'
-import './entry.css'
+import '../styles/entry.css'
 
 export function MemTable() {
   const processes = JSON.parse(sessionStorage.getItem("process_table"));
-
 
   let mem_layout = [];
   const process_size = 4;

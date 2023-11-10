@@ -10,6 +10,40 @@ import Convert from "./utils";
 import ReactDOM from 'react-dom/client'
 
 function ChartFactory({ data_from_menu, mode, quantum, switchCost }) {
+  // Simulado os dados que virao do menu
+  // const data_from_menu = [
+  //   {
+  //     id: 1,
+  //     arrival_time: 2,
+  //     duration: 2
+  //   },
+  //   {
+  //     id: 2,
+  //     arrival_time: 3,
+  //     duration: 2
+  //   },
+  //   {
+  //     id: 3,
+  //     arrival_time: 3,
+  //     duration: 7
+  //   },
+  //   {
+  //     id: 4,
+  //     arrival_time: 4,
+  //     duration: 7
+  //   },
+  //   {
+  //     id: 5,
+  //     arrival_time: 4,
+  //     duration: 12
+  //   },
+  //   {
+  //     id: 6,
+  //     arrival_time: 3,
+  //     duration: 5
+  //   }
+  // ];
+
   // UseState pra o array de guarda as infos do chart
   const [to_chart_data, setToChartData] = useState([]);
   const [totalTurnaround, setTotalTurnaround] = useState(0);
@@ -136,8 +170,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	const quantum = parseInt(Number(queryParams.get("quantum")));
 	const switchCost = parseInt(Number(queryParams.get("switchCost")));
   const data = dataQueryParam ? JSON.parse(decodeURIComponent(dataQueryParam)) : null;
-
+<<<<<<< HEAD
+  
   ReactDOM.createRoot(document.getElementById("gantt-root")).render(
-		<ChartFactory data_from_menu={data} mode={mode} quantum={quantum} switchCost={switchCost} />
-	);
+    <ChartFactory data_from_menu={data} mode={mode} />
+  );
+=======
+
+  render(<ChartFactory data_from_menu={data} mode={mode} quantum={quantum} switchCost={switchCost}/>, rootElement);
+>>>>>>> feat/preemption
 });

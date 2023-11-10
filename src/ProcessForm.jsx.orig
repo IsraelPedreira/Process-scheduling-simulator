@@ -145,20 +145,25 @@ export function ProcessForm(props) {
 				const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
 			
 				// Navigate to the new HTML page with the data as a query parameter
+<<<<<<< HEAD
+				if (mode == "EDF" || mode == "RR"){
+					window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}&quantum=${props.quantum}&switch_cost=${props.switchCost}`;
+					return;
+				} else {
+					window.location.href = `gantt.html?mode=${mode}&data=${dataQueryParam}`;
+				}
+=======
 				window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&mode=${mode}&data=${dataQueryParam}`;
+>>>>>>> refs/remotes/origin/feat/preemption
 			}
 		}
-		return handleOnSubmitMode 
+	return handleOnSubmitMode 
   }
   const handleOnClear = (event) => {
     event.preventDefault();
 
     props.updateProcessTable([]);
-		props.setQuantum("");
-		props.setSwitchCost("");
     sessionStorage.removeItem("process_table")
-    sessionStorage.removeItem("quantum")
-    sessionStorage.removeItem("switch_cost")
   }
 
   return (
@@ -238,11 +243,11 @@ export function ProcessForm(props) {
 					<button onClick={handleSetSwitchCost}>Confirmar</button>
 				</div>
         <div className="exit-buttons">
-          <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
-          <button onClick={handleOnSubmitFactory("FIFO")} className='formButton' type="submit">FIFO</button>
-          <button onClick={handleOnSubmitFactory("SJF")} className='formButton'type="submit">SJF</button>
-          <button onClick={handleOnSubmitFactory("EDF")} className='formButton' type="submit">EDF</button>
-          <button onClick={handleOnSubmitFactory("RR")} className='formButton'type="submit">RR</button>
+          <button onClick={handleAddProcess} type="submit">Adicionar</button>
+          <button onClick={handleOnSubmitFactory("FIFO")} type="submit">FIFO</button>
+          <button onClick={handleOnSubmitFactory("SJF")} type="submit">SJF</button>
+          <button onClick={handleOnSubmitFactory("EDF")} type="submit">EDF</button>
+          <button onClick={handleOnSubmitFactory("RR")} type="submit">RR</button>
         </div>
         <div className="file-submit">
           <input type="file" accept=".json" onChange={handleFileChange}></input>
