@@ -1,0 +1,28 @@
+/* style the background and body */
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Roboto&display=swap');
+body {
+	background-color: #ECE3CE;
+  font-family: 'Nunito', Courier, monospace;
+}
+
+/* style the entry containers */
+#entry-root {
+	width: 100%;
+}
+.entry{
+  padding: 2%;
+  display: flex;
+  align-items: center;
+}
+.entry-form{
+  flex: 1;
+  padding:20px;
+}
+
+
+.entry-list{
+  flex: 1;
+  padding:20px;
+}
+
+/* style the entry footer position */
