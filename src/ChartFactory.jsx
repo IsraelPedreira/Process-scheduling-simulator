@@ -67,15 +67,23 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
   const useEffectFactory = (schedMode, memMode) => {
     return useEffect(() => {
 			let schedData = null;
-			if (schedMode == "FIFO") {
-				schedData = FIFO(data_from_menu);
-			} else if (schedMode == "SJF") {
-				schedData = SJF(data_from_menu);
-			} else if (schedMode == "EDF") {
-				schedData = EDF(data_from_menu, quantum, switchCost);
-			} else if (schedMode == "RR") {
-				schedData = RR(data_from_menu, quantum, switchCost);
+			switch (schedMode) {
+        case "FIFO":
+				  schedData = FIFO(data_from_menu);
+          break;
+			  case "SJF":
+				  schedData = SJF(data_from_menu);
+          break;
+			  case "EDF":
+				  schedData = EDF(data_from_menu, quantum, switchCost);
+          break;
+			  case "RR":
+				  schedData = RR(data_from_menu, quantum, switchCost);
+          break;
+        default:
+          throw Error("Unreachable");
 			}
+
 			let tempPageTable = Array(MEMORY_SIZE).fill("x");
 			let pageTableHistory = [];
 			if (memMode == "FIFO") {
