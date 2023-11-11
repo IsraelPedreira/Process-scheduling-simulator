@@ -1,27 +1,38 @@
+.calc-div{
+    display: flex;
+}
+
 .turnaround-text {
     text-align: center;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     padding: 10px;
+    margin:10px;
+    width: 25%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 .page-faults-text {
     text-align: center;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     padding: 10px;
+    margin:10px;
+    width: 25%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .ram-bg {
+    display: flex;
     background-color: #CCE;
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     justify-content: center;
     align-items: center;
-    display: flex;
-    gap: 2rem;
+}
+
+.ram-bg > * {
+	margin-right: 5%;
 }
 
 .ram-title {
@@ -43,6 +54,7 @@
 .ram-list {
     display: grid;
     grid-template-columns: repeat(10, 2.2em);
+    grid-template-rows: repeat(5, 2.2em);
     grid-gap: 5px;
     padding: 10px;
     background-color: white;
@@ -56,6 +68,7 @@
     padding: 2px;
     max-width: 30px;
     max-height: 30px;
+    min-height: 30px;
     text-align: center;
     background-color: #BBBBBB;
 }

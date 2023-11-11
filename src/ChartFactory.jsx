@@ -36,7 +36,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
       })
       chartData.splice(1,1);
       
-    const delay = 10; // delay de atualizacao da animacao // FIXME change back to 1
+    const delay = 1; // delay de atualizacao da animacao // FIXME change back to 1
     const animationStep = 0.03; // de quanto em quanto a barra vai crescer
   
     for (let i = 0; i < chartData.length; i++) {
@@ -67,23 +67,34 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
   const useEffectFactory = (schedMode, memMode) => {
     return useEffect(() => {
 			let schedData = null;
-			if (schedMode == "FIFO") {
-				schedData = FIFO(data_from_menu);
-			} else if (schedMode == "SJF") {
-				schedData = SJF(data_from_menu);
-			} else if (schedMode == "EDF") {
-				schedData = EDF(data_from_menu, quantum, switchCost);
-			} else if (schedMode == "RR") {
-				schedData = RR(data_from_menu, quantum, switchCost);
+			switch (schedMode) {
+        case "FIFO":
+				  schedData = FIFO(data_from_menu);
+          break;
+			  case "SJF":
+				  schedData = SJF(data_from_menu);
+          break;
+			  case "EDF":
+				  schedData = EDF(data_from_menu, quantum, switchCost);
+          break;
+			  case "RR":
+				  schedData = RR(data_from_menu, quantum, switchCost);
+          break;
+        default:
+          throw Error("Unreachable");
 			}
 			let tempPageTable = Array(MEMORY_SIZE).fill({"page": "x", "pid": "x"});
 			let pageTableHistory = [];
-			if (memMode == "FIFO") {
-				pageTableHistory = FIFO_MEM(tempPageTable, schedData);
-			} else if (memMode == "LRU") {
-				// TODO implement LRU
+			switch (memMode) {
+				case "FIFO":
+				  pageTableHistory = FIFO_MEM(tempPageTable, schedData);
+					break;
+			  case "LRU":
+				  // TODO implement LRU
+					break;
+				default:
+					throw Error("Unreachable");
 			}
-			console.log("pageTableHistory is", pageTableHistory)
 
 			// calculate average turnaround
 			const final_turnaround = calculateTurnaround(data_from_menu, schedData);

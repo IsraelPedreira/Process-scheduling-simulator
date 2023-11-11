@@ -34,9 +34,9 @@ export function MemTable({ pageTable }) {
         }
       </ul>
     </div>
-      <div style={{ width: 100, height: 100 }}>
-        <CircularProgressbar value={percentage} text={`${percentage}%`} />
-      </div>
+		<div style={{ width: 100, height: 100 }}>
+			<CircularProgressbar value={percentage} text={`${percentage}%`} />
+		</div>
 	</div>
   )
 }

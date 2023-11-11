@@ -6,9 +6,10 @@ import "../styles/gantt.css"
 export const ChartComponent = ({ data, pageTable, options, turnaround, pageFaults }) => {
   return (
     <>
-      <p className="turnaround-text">Turnaround: {turnaround}</p>
-			<p className="page-faults-text">Total de page faults: {pageFaults}</p>
-
+      <div className="calc-div">
+        <p className="turnaround-text">Turnaround: {turnaround}</p>
+			  <p className="page-faults-text">Total de page faults: {pageFaults}</p>
+      </div>
       <Chart
         chartType="Timeline"
         data={data}
