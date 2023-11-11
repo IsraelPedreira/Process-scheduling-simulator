@@ -13,33 +13,46 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
   const [totalTurnaround, setTotalTurnaround] = useState(0);
 	const [totalPageFaults, setTotalPageFaults] = useState(0);
 	const [pageTable, setPageTable] = useState(Array(MEMORY_SIZE).fill("x"));
+  const [chartColors, setChartColors] = useState([]);
+  const [setupProcesses, setSetupProcesses] = useState([]);
 
   // Options requeridas pelo Google Chart
   let options = {
     allowHtml: true,
     enableInteractivity: false,
-    hAxis: {
-      minValue: 0,
-      maxValue: 60,
-    },
+    colors: chartColors,
     timeline: {
-      colorByRowLabel: true,
-    },
+      showRowLabel: false
+    }
   }
+
+  function set_chart_colors(chartData) {
+    // Atualiza o array de cores antes de iniciar a animacao
+    const newColors = [];
+    let colored = [];
+    for (let i = 1; i < chartData.length; i++) {
+      if (!colored.includes(chartData[i][1])) {
+        if (chartData[i][1] === "Chaveamento") {
+          newColors.push("#B22222");
+        } else if (chartData[i][1] === "process_position_marker") {
+          newColors.push("#FFFFFF");
+        } else {
+          newColors.push("#008000");
+        }
+        colored.push(chartData[i][1]);
+      }
+    }
+    setChartColors(newColors);
+  }
+
 
   // Funcao que anima o chart
   async function chart_animation(chartData, pageTableHistory) {
-      chartData.map((processo, index) => {
-        if(index > 0){  
-          processo[1] = `${processo[3]} - ${processo[4]}`
-        } 
-      })
-      chartData.splice(1,1);
-      
+    set_chart_colors(chartData);
+     
     const delay = 1; // delay de atualizacao da animacao
-    const animationStep = 0.03; // de quanto em quanto a barra vai crescer
-  
-    for (let i = 0; i < chartData.length; i++) {
+    const animationStep = 20; // de quanto em quanto a barra vai crescer
+    for (let i = 1; i < chartData.length; i++) {
 			// update page table
 			const [_, pageTableCurrent] = pageTableHistory[i];
 			setPageTable(pageTableCurrent);
@@ -48,15 +61,15 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 
       let currentData = chartData.slice(0, i + 1);
       let currentProcess = currentData[i];
-      let currentProcessStart = currentProcess[3];
-      let currentProcessEnd = currentProcess[4];
+      let currentProcessStart = currentProcess[2].getTime();
+      let currentProcessEnd = currentProcess[3].getTime();
 
       for (
         let j = currentProcessStart;
-        j < currentProcessEnd;
+        j <= currentProcessEnd;
         j += animationStep
       ) {
-        currentData[i][4] = j;
+        currentData[i][3] = new Date(j);
         setToChartData([...currentData]);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
