@@ -146,66 +146,70 @@ export function ProcessForm(props) {
     <div className="process-form-container">
       <h2>Criar novo processo</h2>
       <form>
-        <div>
-          <label htmlFor="pid">PID:</label>
-          <input
-            type="text"
-            id="pid"
-            name="pid"
-            value={formData.pid}
-            onChange={handleChange}
-          />
+        <div className='mainDivAddProcess'>
+          <div>
+            <label htmlFor="pid">PID:</label>
+            <input
+              type="text"
+              id="pid"
+              name="pid"
+              value={formData.pid}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="arrival_time">Chegada:</label>
+            <input
+              type="text"
+              id="arrival_time"
+              name="arrival_time"
+              value={formData.arrival_time}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="duration">Duração:</label>
+            <input
+              type="text"
+              id="duration"
+              name="duration"
+              value={formData.duration}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="priority">Prioridade:</label>
+            <input
+              type="text"
+              id="priority"
+              name="priority"
+              value={formData.priority}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="deadline">Deadline:</label>
+            <input
+              type="text"
+              id="deadline"
+              name="deadline"
+              value={formData.deadline}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="numPages">Número de páginas utilizadas:</label>
+            <input
+              type="text"
+              id="numPages"
+              name="numPages"
+              value={formData.numPages}
+              onChange={handleChange}
+            />
+          </div>
+          <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
         </div>
-        <div>
-          <label htmlFor="arrival_time">Chegada:</label>
-          <input
-            type="text"
-            id="arrival_time"
-            name="arrival_time"
-            value={formData.arrival_time}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="duration">Duração:</label>
-          <input
-            type="text"
-            id="duration"
-            name="duration"
-            value={formData.duration}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="priority">Prioridade:</label>
-          <input
-            type="text"
-            id="priority"
-            name="priority"
-            value={formData.priority}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="deadline">Deadline:</label>
-          <input
-            type="text"
-            id="deadline"
-            name="deadline"
-            value={formData.deadline}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="numPages">Número de páginas utilizadas:</label>
-          <input
-            type="text"
-            id="numPages"
-            name="numPages"
-            value={formData.numPages}
-            onChange={handleChange}
-          />
-        </div>
+        <div className='separator'></div>
 				<div className="quantumEntry">
 					<label htmlFor="quantum">Quantum:</label>
 					<input
@@ -228,8 +232,8 @@ export function ProcessForm(props) {
 					/>
 					<button onClick={handleSetSwitchCost}>Confirmar</button>
 				</div>
+        <div className='separator'></div>
         <div className="exit-buttons">
-          <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
           <button onClick={handleOnSubmitFactory("FIFO")} className='formButton' type="submit">FIFO</button>
           <button onClick={handleOnSubmitFactory("SJF")} className='formButton'type="submit">SJF</button>
           <button onClick={handleOnSubmitFactory("EDF")} className='formButton' type="submit">EDF</button>
