@@ -15,7 +15,7 @@ export function MemTable() {
   }
 
   // Preencher memória com cada processo `process_size` vezes.
-  for (let i = 0; i <= memory_size; i++){
+  for (let i = 0; i < memory_size; i++){
     let process = processes[Math.floor(i/process_size)];
     memlist.push(process == null? null : process)
   }
