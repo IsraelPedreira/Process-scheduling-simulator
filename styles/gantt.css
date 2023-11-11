@@ -53,8 +53,8 @@
 
 .ram-list {
     display: grid;
-    grid-template-columns: repeat(10, 2.2em);
-    grid-template-rows: repeat(5, 2.2em);
+    grid-template-columns: repeat(10, 4.4em);
+    grid-template-rows: repeat(5, 3.3em);
     grid-gap: 5px;
     padding: 10px;
     background-color: white;
@@ -66,8 +66,8 @@
     list-style: None;
     font-size: 25px;
     padding: 2px;
-    max-width: 30px;
-    max-height: 30px;
+    max-width: 50px;
+    max-height: 50px;
     min-height: 30px;
     text-align: center;
     background-color: #BBBBBB;
