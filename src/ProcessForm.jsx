@@ -99,6 +99,7 @@ export function ProcessForm(props) {
 			duration: '',
 			priority: '',
 			deadline: '',
+      numPages: ''
 		});
   }
 
