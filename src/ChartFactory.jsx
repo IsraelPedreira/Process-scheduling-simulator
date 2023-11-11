@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ChartComponent } from "./Chart";
 import { FIFO, SJF, EDF, RoundRobin as RR } from "./sched/process";
 import { FIFO as FIFO_MEM } from "./pagination/FIFO";
+import { LRU as LRU_MEM } from "./pagination/LRU";
 import { calculateTurnaround } from "./sched/turnaround";
 import Convert from "./utils";
 
@@ -90,7 +91,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 				  pageTableHistory = FIFO_MEM(tempPageTable, schedData);
 					break;
 			  case "LRU":
-				  // TODO implement LRU
+					pageTableHistory = LRU_MEM(tempPageTable, schedData);
 					break;
 				default:
 					throw Error("Unreachable");
