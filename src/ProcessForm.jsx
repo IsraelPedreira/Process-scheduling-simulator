@@ -1,28 +1,6 @@
 import React, { useState, useEffect, Component } from 'react';
 
-// const max_priority = 5
-// const max_deadline = 100
-
-// function generateTask(process_table, pid = -1, arrival_time = 0, duration = 50, priority = 1, deadline = 100, randomize = true) {
-// 	if (randomize){
-// 		arrival_time = Math.floor(Math.random() * 100)
-// 		duration = Math.floor(Math.random() * (100 - arrival_time))
-// 		priority = Math.floor(Math.random() * max_priority)
-// 		deadline = Math.floor(Math.random() * max_deadline)
-// 	}
-// 	if (pid === -1){
-// 		pid = process_table.length + 1
-// 	}
-// 	const newTask = {
-// 		"pid": pid,
-// 		"arrival_time": arrival_time,
-// 		"duration": duration, // random duration from 0 to 100 - arrival_time (TOTAL RANGE: 0-100)
-// 		"priority": priority,
-// 		"deadline": deadline
-// 	};
-// 	process_table.push(newTask);
-// 	return process_table;
-// }
+const MAX_PROCESSES = 12
 
 function AddProcess(process_table, pid, arrival_time, duration, priority, deadline, numPages){
 	process_table.push({
@@ -69,8 +47,8 @@ export function ProcessForm(props) {
 			try {
 				const parsedContent = JSON.parse(content);
 				const pids = parsedContent["process_table"].map((process) => process.pid);
-				if (pids.length > 8){
-					alert("O limite máximo de processos são 8.");
+				if (pids.length > MAX_PROCESSES){
+					alert(`O limite máximo de processos são ${MAX_PROCESSES}.`);
 					return;
 				} else if ((new Set(pids)).size !== pids.length){
 					// duplicate PIDs
@@ -100,8 +78,8 @@ export function ProcessForm(props) {
   const handleAddProcess = (event) => {
     event.preventDefault();
     
-    if (props.processTable.length >= 8) {
-      alert("O limite máximo de processos são 8.");
+    if (props.processTable.length >= MAX_PROCESSES) {
+      alert(`O limite máximo de processos são ${MAX_PROCESSES}.`);
       return;
     }
 

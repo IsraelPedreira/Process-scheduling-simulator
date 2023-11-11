@@ -13,7 +13,7 @@ export const ChartComponent = ({ data, pageTable, options, turnaround, pageFault
         chartType="Timeline"
         data={data}
         width="100%"
-        height="400px"
+        height="600px"
         options={options}
       />
 			<MemTable pageTable={pageTable}/>

@@ -41,7 +41,7 @@
 
 .ram-list {
     display: grid;
-    grid-template-columns: repeat(12, 2.2em);
+    grid-template-columns: repeat(10, 2.2em);
     grid-gap: 5px;
     padding: 10px;
     background-color: white;
