@@ -230,7 +230,7 @@ function EDF(process_table, quantum, switch_cost){
 			"duration": delta_time,
 			"priority": process.priority,
 			"deadline": process.deadline,
-			"numPages": process.numPages
+			"pages": process.pages
 		})
 		// Run process
 		curr_time += delta_time
@@ -250,7 +250,7 @@ function EDF(process_table, quantum, switch_cost){
 				"duration": switch_cost,
 				"priority": -1,
 				"deadline": -1,
-				"numPages": 0
+				"pages": []
 			})
 			// run switch
 			curr_time += switch_cost
@@ -302,7 +302,7 @@ function RoundRobin(process_table, quantum, switch_cost){
 			"duration": delta_time,
 			"priority": process.priority,
 			"deadline": process.deadline,
-			"numPages": process.numPages
+			"pages": process.pages
 		})
 		// Run process
 		curr_time += delta_time
@@ -322,7 +322,7 @@ function RoundRobin(process_table, quantum, switch_cost){
 				"duration": switch_cost,
 				"priority": -1,
 				"deadline": -1,
-				"numPages": 0
+				"pages": []
 			})
 			// run switch
 			curr_time += switch_cost

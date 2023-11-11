@@ -36,7 +36,7 @@ export function ProcessList(props) {
                         </tr>
                         <tr>
                           <td>Páginas:</td>
-                          <td>{process.numPages}</td>
+                          <td>{process.pages.length}</td>
                         </tr>
                        </tbody>
                    </table>

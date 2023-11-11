@@ -9,16 +9,13 @@
 /*   margin-right: 5%; */
 /* }  */
 
-.process-footer-quantum {
+.process-footer-text {
 	margin-left: 5%;
+	margin-right: 5%;
 	text-align: left;
 }
-.process-footer-switchCost {
-	margin-right: 5%;
-	text-align: right;
-}
 
-.process-footer-quantum, .process-footer-switchCost {
+.process-footer-text {
   background-color: #4F6F52;
 	padding: 2%;
 	color: #ECE3CE;

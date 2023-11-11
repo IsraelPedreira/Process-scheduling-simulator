@@ -36,7 +36,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
       })
       chartData.splice(1,1);
       
-    const delay = 1; // delay de atualizacao da animacao
+    const delay = 10; // delay de atualizacao da animacao // FIXME change back to 1
     const animationStep = 0.03; // de quanto em quanto a barra vai crescer
   
     for (let i = 0; i < chartData.length; i++) {
@@ -76,15 +76,14 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 			} else if (schedMode == "RR") {
 				schedData = RR(data_from_menu, quantum, switchCost);
 			}
-			let tempPageTable = Array(MEMORY_SIZE).fill("x");
+			let tempPageTable = Array(MEMORY_SIZE).fill({"page": "x", "pid": "x"});
 			let pageTableHistory = [];
 			if (memMode == "FIFO") {
-				pageTableHistory = FIFO_MEM(tempPageTable, (newPageTable) => newPageTable, schedData);
+				pageTableHistory = FIFO_MEM(tempPageTable, schedData);
 			} else if (memMode == "LRU") {
 				// TODO implement LRU
 			}
-			// NOTE : so that it aligns with the chart, since it needs an extra entry for labels
-			pageTableHistory.unshift([false, Array(MEMORY_SIZE).fill("x")])
+			console.log("pageTableHistory is", pageTableHistory)
 
 			// calculate average turnaround
 			const final_turnaround = calculateTurnaround(data_from_menu, schedData);
