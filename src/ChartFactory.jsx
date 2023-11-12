@@ -22,7 +22,8 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
     enableInteractivity: false,
     colors: chartColors,
     timeline: {
-      showRowLabel: false
+      showRowLabel: false,
+      showBarLabels: false
     }
   }
 
