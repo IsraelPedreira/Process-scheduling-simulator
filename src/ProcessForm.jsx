@@ -1,36 +1,15 @@
 import React, { useState, useEffect, Component } from 'react';
 
-// const max_priority = 5
-// const max_deadline = 100
+const MAX_PROCESSES = 12
 
-// function generateTask(process_table, pid = -1, arrival_time = 0, duration = 50, priority = 1, deadline = 100, randomize = true) {
-// 	if (randomize){
-// 		arrival_time = Math.floor(Math.random() * 100)
-// 		duration = Math.floor(Math.random() * (100 - arrival_time))
-// 		priority = Math.floor(Math.random() * max_priority)
-// 		deadline = Math.floor(Math.random() * max_deadline)
-// 	}
-// 	if (pid === -1){
-// 		pid = process_table.length + 1
-// 	}
-// 	const newTask = {
-// 		"pid": pid,
-// 		"arrival_time": arrival_time,
-// 		"duration": duration, // random duration from 0 to 100 - arrival_time (TOTAL RANGE: 0-100)
-// 		"priority": priority,
-// 		"deadline": deadline
-// 	};
-// 	process_table.push(newTask);
-// 	return process_table;
-// }
-
-function AddProcess(process_table, pid, arrival_time, duration, priority, deadline){
+function AddProcess(process_table, pid, arrival_time, duration, priority, deadline, pages){
 	process_table.push({
 		"pid": pid,
 		"arrival_time": arrival_time,
 		"duration": duration,
 		"priority": priority,
-		"deadline": deadline
+		"deadline": deadline,
+		"pages": pages
 	})
 	return process_table
 }
@@ -42,6 +21,7 @@ export function ProcessForm(props) {
     duration: '',
     priority: '',
     deadline: '',
+		pages: '',
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -57,6 +37,14 @@ export function ProcessForm(props) {
     });
   }
 
+	const handlePageList = (event) => {
+		const { name, value } = event.target;
+		setFormData({
+			...formData,
+			[name]: value.split(",")
+		});
+	}
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader()
@@ -67,21 +55,26 @@ export function ProcessForm(props) {
 			try {
 				const parsedContent = JSON.parse(content);
 				const pids = parsedContent["process_table"].map((process) => process.pid);
-				if (pids.length > 8){
-					alert("O limite máximo de processos são 8.");
+				if (pids.length > MAX_PROCESSES){
+					alert(`O limite máximo de processos são ${MAX_PROCESSES}.`);
 					return;
 				} else if ((new Set(pids)).size !== pids.length){
 					// duplicate PIDs
 					alert("Erro: PIDs duplicados");
 					return;
 				}
-				props.updateProcessTable(parsedContent);
+				props.updateProcessTable(parsedContent["process_table"]);
 				props.setQuantum(parsedContent["quantum"]);
 				props.setSwitchCost(parsedContent["switch_cost"]);
+				props.setSchedMode(parsedContent["sched_mode"]);
+				props.setMemMode(parsedContent["mem_mode"]);
+				console.log(props.processTable, props.quantum, props.switchCost, props.schedMode, props.memMode)
 				// cache it!
 				sessionStorage.setItem("process_table", JSON.stringify(parsedContent["process_table"]));
 				sessionStorage.setItem("quantum", parsedContent["quantum"]);
 				sessionStorage.setItem("switch_cost", parsedContent["switch_cost"]);
+				sessionStorage.setItem("sched_mode", parsedContent["sched_mode"]);
+				sessionStorage.setItem("mem_mode", parsedContent["mem_mode"]);
 			} catch (error) {
 				alert("Formato inválido: forneça um arquivo JSON válido.")
 				return;
@@ -98,8 +91,8 @@ export function ProcessForm(props) {
   const handleAddProcess = (event) => {
     event.preventDefault();
     
-    if (props.processTable.length >= 8) {
-      alert("O limite máximo de processos são 8.");
+    if (props.processTable.length >= MAX_PROCESSES) {
+      alert(`O limite máximo de processos são ${MAX_PROCESSES}.`);
       return;
     }
 
@@ -108,7 +101,6 @@ export function ProcessForm(props) {
         return;
     }
 
-    console.log('Form data submitted:', formData);
 		const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
     props.updateProcessTable(_updated);
 		// cache it!
@@ -120,6 +112,7 @@ export function ProcessForm(props) {
 			duration: '',
 			priority: '',
 			deadline: '',
+      pages: ''
 		});
   }
 
@@ -133,88 +126,122 @@ export function ProcessForm(props) {
 		sessionStorage.setItem("switch_cost", tempSwitchCost);
 	}
 
-  const handleOnSubmitFactory = (mode) => {
-		const handleOnSubmitMode = (event) => {
-			event.preventDefault();
-			if (!props.processTable){
-				alert("Erro: informe pelo menos um processo");
-			} else if ((!props.quantum || !props.switchCost) && (mode == "EDF" || mode == "RR")) {
-				alert(`Erro: para visualizar o algoritmo de escalonamento ${mode} informe o quantum e a sobrecarga de chaveamento.`);	
-			} else {
-				// Serialize the data as a query parameter
-				const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
-			
-				// Navigate to the new HTML page with the data as a query parameter
-				window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&mode=${mode}&data=${dataQueryParam}`;
-			}
+	const handleSetSchedMode = (event) => {
+		event.preventDefault();
+		// id of buttons informs mode!
+		const mode = event.target.value;
+		props.setSchedMode(mode);
+		sessionStorage.setItem("sched_mode", mode);
+	}
+	
+	const handleSetMemMode = (event) => {
+		event.preventDefault();
+		// id of buttons informs mode!
+		const mode = event.target.value;
+		props.setMemMode(mode);
+		sessionStorage.setItem("mem_mode", mode);
+	}
+
+	const handleOnSubmit = (event) => {
+		event.preventDefault();
+		console.log('Form data submitted:', props.processTable);
+		if (props.processTable.length == 0){
+			alert("Erro: informe pelo menos um processo");
+		} else if ((!props.quantum || !props.switchCost) && (props.schedMode == "EDF" || props.schedMode == "RR")) {
+			alert(`Erro: para visualizar o algoritmo de escalonamento ${mode} informe o quantum e a sobrecarga de chaveamento.`);	
+		} else {
+			// Serialize the data as a query parameter
+			const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
+		
+			// Navigate to the new HTML page with the data as a query parameter
+			// TODO MAKE MEMMODE CUSTOMIZABLE
+			window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&schedMode=${props.schedMode}&memMode=${props.memMode}&data=${dataQueryParam}`;
 		}
-		return handleOnSubmitMode 
-  }
+	}
+
   const handleOnClear = (event) => {
     event.preventDefault();
 
     props.updateProcessTable([]);
 		props.setQuantum("");
 		props.setSwitchCost("");
-    sessionStorage.removeItem("process_table")
-    sessionStorage.removeItem("quantum")
-    sessionStorage.removeItem("switch_cost")
+		props.setSchedMode("FIFO");
+		props.setMemMode("FIFO");
+		sessionStorage.setItem("process_table", JSON.stringify([]));
+		sessionStorage.setItem("quantum", "");
+		sessionStorage.setItem("switch_cost", "");
+		sessionStorage.setItem("sched_mode", "");
+		sessionStorage.setItem("mem_mode", "");
   }
 
   return (
     <div className="process-form-container">
       <h2>Criar novo processo</h2>
       <form>
-        <div>
-          <label htmlFor="pid">PID:</label>
-          <input
-            type="text"
-            id="pid"
-            name="pid"
-            value={formData.pid}
-            onChange={handleChange}
-          />
+        <div className='mainDivAddProcess'>
+          <div>
+            <label htmlFor="pid">PID:</label>
+            <input
+              type="text"
+              id="pid"
+              name="pid"
+              value={formData.pid}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="arrival_time">Chegada:</label>
+            <input
+              type="text"
+              id="arrival_time"
+              name="arrival_time"
+              value={formData.arrival_time}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="duration">Duração:</label>
+            <input
+              type="text"
+              id="duration"
+              name="duration"
+              value={formData.duration}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="priority">Prioridade:</label>
+            <input
+              type="text"
+              id="priority"
+              name="priority"
+              value={formData.priority}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="deadline">Deadline:</label>
+            <input
+              type="text"
+              id="deadline"
+              name="deadline"
+              value={formData.deadline}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="pages">Páginas utilizadas (lista separada por vírgulas, sem espaços):</label>
+            <input
+              type="text"
+              id="pages"
+              name="pages"
+              value={formData.pages}
+              onChange={handlePageList}
+            />
+          </div>
+          <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
         </div>
-        <div>
-          <label htmlFor="arrival_time">Chegada:</label>
-          <input
-            type="text"
-            id="arrival_time"
-            name="arrival_time"
-            value={formData.arrival_time}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="duration">Duração:</label>
-          <input
-            type="text"
-            id="duration"
-            name="duration"
-            value={formData.duration}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="priority">Prioridade:</label>
-          <input
-            type="text"
-            id="priority"
-            name="priority"
-            value={formData.priority}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="deadline">Deadline:</label>
-          <input
-            type="text"
-            id="deadline"
-            name="deadline"
-            value={formData.deadline}
-            onChange={handleChange}
-          />
-        </div>
+        <div className='separator'></div>
 				<div className="quantumEntry">
 					<label htmlFor="quantum">Quantum:</label>
 					<input
@@ -237,18 +264,29 @@ export function ProcessForm(props) {
 					/>
 					<button onClick={handleSetSwitchCost}>Confirmar</button>
 				</div>
+        <div className='separator'></div>
         <div className="exit-buttons">
-          <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
-          <button onClick={handleOnSubmitFactory("FIFO")} className='formButton' type="submit">FIFO</button>
-          <button onClick={handleOnSubmitFactory("SJF")} className='formButton'type="submit">SJF</button>
-          <button onClick={handleOnSubmitFactory("EDF")} className='formButton' type="submit">EDF</button>
-          <button onClick={handleOnSubmitFactory("RR")} className='formButton'type="submit">RR</button>
+					<h2 className="sched-options-text">Algoritmos de Escalonamento</h2>
+          <button onClick={handleSetSchedMode} className='schedButton' value="FIFO" id="FIFO">FIFO</button>
+          <button onClick={handleSetSchedMode} className='schedButton' value="SJF" id="SJF">SJF</button>
+          <button onClick={handleSetSchedMode} className='schedButton' value="EDF" id="EDF">EDF</button>
+          <button onClick={handleSetSchedMode} className='schedButton' value="RR" id="RR">RR</button>
+        </div>
+        <div className="exit-buttons">
+					<h2 className="mem-options-text">Algoritmos de Paginação</h2>
+          <button onClick={handleSetMemMode} className='memButton' value="FIFO" id="FIFO">FIFO</button>
+          <button onClick={handleSetMemMode} className='memButton' value="LRU" id="LRU">LRU</button>
         </div>
         <div className="file-submit">
           <input type="file" accept=".json" onChange={handleFileChange}></input>
         </div>
-				<div className="clear-button">
-					<button onClick={handleOnClear} type="submit">Limpar</button>
+					<div style={{overflow: "hidden"}}>
+						<div className="clear-button">
+							<button onClick={handleOnClear}>Limpar</button>
+						</div>
+						<div className="submit-button">
+							<button onClick={handleOnSubmit}>Iniciar</button>
+						</div>
 				</div>
       </form>
     </div>

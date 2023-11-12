@@ -34,6 +34,10 @@ export function ProcessList(props) {
                           <td>Deadline:</td>
                           <td>{process.deadline}</td>
                         </tr>
+                        <tr>
+                          <td>Páginas:</td>
+                          <td>{process.pages.length}</td>
+                        </tr>
                        </tbody>
                    </table>
                    </div>

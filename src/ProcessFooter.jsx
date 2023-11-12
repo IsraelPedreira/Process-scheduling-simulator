@@ -3,23 +3,33 @@ import React, { useState, useEffect, Component } from 'react';
 export function ProcessFooter(props) {
 	let quantumText, switchCostText;
 	if (!props.quantum){
-		quantumText = "Quantum ainda não definido."
+		quantumText = "Quantum indefinido."
 	} else {
 		quantumText = `Quantum: ${props.quantum}`
 	}
 	if (!props.switchCost){
-		switchCostText = "Sobrecarga de Chaveamento ainda não definida."
+		switchCostText = "Sobrecarga indefinida."
 	} else {
-		switchCostText = `Sobrecarga de Chaveamento: ${props.switchCost}`
+		switchCostText = `Sobrecarga: ${props.switchCost}`
 	}
 
 	return (
 		<div className="process-footer">
-			<div className="process-footer-quantum">
-				<strong> {quantumText} </strong>
+			<div style={{display: "flex", width: "40%"}}>
+				<div className="process-footer-text">
+					<strong> {quantumText} </strong>
+				</div>
+				<div className="process-footer-text">
+					<strong> {switchCostText} </strong>
+				</div>
 			</div>
-			<div className="process-footer-switchCost">
-				<strong> {switchCostText} </strong>
+			<div style={{display: "flex", width: "60%"}}>
+				<div className="process-footer-text">
+					<strong> Escalonamento: {props.schedMode} </strong>
+				</div>
+				<div className="process-footer-text">
+					<strong> Paginação: {props.memMode} </strong>
+				</div>
 			</div>
 		</div>
 	)

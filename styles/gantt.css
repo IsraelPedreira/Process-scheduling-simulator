@@ -1,0 +1,83 @@
+.calc-div{
+    display: flex;
+}
+
+.turnaround-text {
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin:10px;
+    width: 25%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.page-faults-text {
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin:10px;
+    width: 25%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.status-text {
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin:10px;
+    width: 25%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.ram-bg {
+    display: flex;
+    background-color: #CCE;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    align-items: center;
+}
+
+.ram-bg > * {
+	margin-right: 5%;
+}
+
+.ram-title {
+    font-size: 20px;
+    padding: 5px 10px 5px 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: white;
+    text-align: center;
+}
+
+.ram {
+    background-color: white;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.ram-list {
+    display: grid;
+    grid-template-columns: repeat(10, 4.4em);
+    grid-template-rows: repeat(5, 3.3em);
+    grid-gap: 5px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.ram-list > * {
+    list-style: None;
+    font-size: 25px;
+    padding: 2px;
+    max-width: 50px;
+    max-height: 50px;
+    min-height: 30px;
+    text-align: center;
+    background-color: #BBBBBB;
+}

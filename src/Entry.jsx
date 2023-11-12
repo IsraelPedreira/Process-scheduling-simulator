@@ -30,6 +30,8 @@ function EntryPage() {
 	const [processTable, updateProcessTable] = useState([]);
 	const [quantum, setQuantum] = useState("");
 	const [switchCost, setSwitchCost] = useState("");
+	const [schedMode, setSchedMode] = useState("FIFO");
+	const [memMode, setMemMode] = useState("FIFO");
 
 	// initialize cache
 	if (sessionStorage.getItem("process_table") === null){
@@ -41,31 +43,47 @@ function EntryPage() {
 	if (sessionStorage.getItem("switch_cost") === null){
 		sessionStorage.setItem("switch_cost", switchCost)
 	}
+	if (sessionStorage.getItem("sched_mode") === null){
+		sessionStorage.setItem("sched_mode", schedMode)
+	}
+	if (sessionStorage.getItem("mem_mode") === null){
+		sessionStorage.setItem("mem_mode", memMode)
+	}
 
-	// read cache
-	if (safeEquality(processTable, JSON.parse(sessionStorage.getItem("process_table"))) === false){
-		const cached_process_table = JSON.parse(sessionStorage.getItem("process_table"))
-		updateProcessTable(cached_process_table)
-	}
-	if (sessionStorage.getItem("quantum") != quantum){
-		setQuantum(sessionStorage.getItem("quantum"))
-	}
-	if (sessionStorage.getItem("switch_cost") != switchCost){
-		setSwitchCost(sessionStorage.getItem("switch_cost"))
-	}
+	// read cache (ONLY ON PAGE RELOAD)
+	useEffect(() => {
+		if (safeEquality(processTable, JSON.parse(sessionStorage.getItem("process_table"))) === false){
+			const cached_process_table = JSON.parse(sessionStorage.getItem("process_table"))
+			updateProcessTable(cached_process_table)
+		}
+		if (sessionStorage.getItem("quantum") != quantum){
+			setQuantum(sessionStorage.getItem("quantum"))
+		}
+		if (sessionStorage.getItem("switch_cost") != switchCost){
+			setSwitchCost(sessionStorage.getItem("switch_cost"))
+		}
+		if (sessionStorage.getItem("sched_mode") != schedMode){
+			setSchedMode(sessionStorage.getItem("sched_mode"))
+		}
+		if (sessionStorage.getItem("mem_mode") != memMode){
+			setMemMode(sessionStorage.getItem("mem_mode"))
+		}
+	}, []);
 
 	return (
 	<div className="entry">
 		<div className="entry-form">
 			<ProcessForm processTable={processTable} updateProcessTable={updateProcessTable} 
-				quantum={quantum} setQuantum={setQuantum} switchCost={switchCost} setSwitchCost={setSwitchCost}/> {/* Render the ProcessForm component here */}
+				quantum={quantum} setQuantum={setQuantum} switchCost={switchCost} setSwitchCost={setSwitchCost}
+				schedMode={schedMode} setSchedMode={setSchedMode} memMode={memMode} setMemMode={setMemMode}
+			/> {/* Render the ProcessForm component here */}
 		</div>
 			<div className="entry-view">
 				<div className="entry-list">
 					<ProcessList processTable={processTable}/>
 				</div>
 				<div className="entry-footer">
-					<ProcessFooter quantum={quantum} switchCost={switchCost}/>
+					<ProcessFooter quantum={quantum} switchCost={switchCost} schedMode={schedMode} memMode={memMode}/>
 				</div>
 			</div>
 	 </div>
