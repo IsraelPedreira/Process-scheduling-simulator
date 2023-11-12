@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChartComponent } from "./Chart";
 import { FIFO, SJF, EDF, RoundRobin as RR } from "./sched/process";
 import { FIFO as FIFO_MEM } from "./pagination/FIFO";
@@ -36,7 +36,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
         } else if (chartData[i][1] === "process_position_marker") {
           newColors.push("#FFFFFF");
         } else if (chartData[i][1] === "process_position_dead_line_marker") {
-          newColors.push("#000000");
+          newColors.push("#111111");
         } else {
           newColors.push("#008000");
         }
@@ -44,6 +44,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
       }
     }
     setChartColors(newColors);
+    console.log(newColors)
   }
 
   function split_setup_processes(chartData) {
@@ -86,7 +87,6 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
       ) {
         currentData[i][3] = new Date(j);
         const newData = [currentData[0], ...setupProcesses, ...currentData.slice(1)];
-        console.log(newData)
         setToChartData(newData);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }

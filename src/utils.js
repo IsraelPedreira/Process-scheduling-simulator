@@ -11,7 +11,11 @@ export default function Convert(data) {
   let dead_line_marker_setted = []
   let pids_setted = []
 
-  // ARMENGUE: colocando todos os processos no chart
+  // Configurando a cor do deadline
+  let name_for_deadline_color = `P${data[0].pid}`;
+  converted_data.push([name_for_deadline_color, "process_position_dead_line_marker", new Date(0, 0, 0, 0, 0, 0, 0 ), new Date(0, 0, 0, 0, 0, 0, 0 )]);
+  
+  // colocando todos os processos no chart
   data.forEach((objeto) => {
     let name = `P${objeto.pid}`;
 
@@ -21,12 +25,13 @@ export default function Convert(data) {
     }
     
   });
-
-  // ARMENGUE 2: colocando a timeline no tamanho certo
+  
+  //  colocando a timeline no tamanho certo
   const end_time = data[data.length - 1].end_time;
-  let name = `P${data[data.length - 1].pid}`;
-  converted_data.push([name, "process_position_marker", new Date(0, 0, 0, 0, 0, end_time, 0 ), new Date(0, 0, 0, 0, 0, end_time, 0 )]);
+  let name_for_time_width = `P${data[data.length - 1].pid}`;
+  converted_data.push([name_for_time_width, "process_position_marker", new Date(0, 0, 0, 0, 0, end_time, 0 ), new Date(0, 0, 0, 0, 0, end_time, 0 )]);
 
+  // Posiconando os DeadLines
   data.forEach((objeto) => {
     if ('arrival_time_dead_line' in objeto && objeto.pid !== "Chaveamento") {
       let name = `P${objeto.pid}`;
