@@ -62,6 +62,8 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
+		// end of animation
+		document.getElementsByClassName("status-text")[0].innerHTML = "Status: finalizado";
   }
 
 	// runs only once

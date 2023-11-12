@@ -17,6 +17,9 @@ export const ChartComponent = ({ data, pageTable, options, turnaround, pageFault
         height="600px"
         options={options}
       />
+			<div className="status-div">
+				<p className="status-text">Status: executando...</p>
+			</div>
 			<MemTable pageTable={pageTable}/>
     </>
   );
