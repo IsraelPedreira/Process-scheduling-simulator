@@ -230,7 +230,7 @@ export function ProcessForm(props) {
             />
           </div>
           <div>
-            <label htmlFor="pages">Número de páginas utilizadas:</label>
+            <label htmlFor="pages">Páginas utilizadas (lista separada por vírgulas, sem espaços):</label>
             <input
               type="text"
               id="pages"
