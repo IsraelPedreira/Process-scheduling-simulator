@@ -37,14 +37,6 @@ export function ProcessForm(props) {
     });
   }
 
-	const handlePageList = (event) => {
-		const { name, value } = event.target;
-		setFormData({
-			...formData,
-			[name]: value.split(",")
-		});
-	}
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader()
@@ -68,7 +60,6 @@ export function ProcessForm(props) {
 				props.setSwitchCost(parsedContent["switch_cost"]);
 				props.setSchedMode(parsedContent["sched_mode"]);
 				props.setMemMode(parsedContent["mem_mode"]);
-				console.log(props.processTable, props.quantum, props.switchCost, props.schedMode, props.memMode)
 				// cache it!
 				sessionStorage.setItem("process_table", JSON.stringify(parsedContent["process_table"]));
 				sessionStorage.setItem("quantum", parsedContent["quantum"]);
@@ -101,7 +92,19 @@ export function ProcessForm(props) {
         return;
     }
 
-		const _updated = AddProcess([...props.processTable], ...Object.values(formData).map(x => parseInt(x)))
+		const parseFormData = (formData) => {
+			const parsedFormData = [
+				parseInt(formData.pid),
+				parseInt(formData.arrival_time),
+				parseInt(formData.duration),
+				parseInt(formData.priority),
+				parseInt(formData.deadline),
+				formData.pages.split(",").map(x => parseInt(x))
+			]
+			return parsedFormData;
+		}
+
+		const _updated = AddProcess([...props.processTable], ...parseFormData(formData));
     props.updateProcessTable(_updated);
 		// cache it!
 		sessionStorage.setItem("process_table", JSON.stringify(_updated));
@@ -236,7 +239,7 @@ export function ProcessForm(props) {
               id="pages"
               name="pages"
               value={formData.pages}
-              onChange={handlePageList}
+              onChange={handleChange}
             />
           </div>
           <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
