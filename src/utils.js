@@ -8,8 +8,14 @@ export default function Convert(data) {
     ]
   ];
   let last_process_name = "";
+  let EDF = false;
   let dead_line_marker_setted = []
   let pids_setted = []
+
+  function is_value_in_open_interval(value, lower_limit, upper_limit) { 
+    return value > lower_limit && value < upper_limit; 
+  }
+
 
   // Configurando a cor do deadline
   let name_for_deadline_color = `P${data[0].pid}`;
@@ -31,10 +37,11 @@ export default function Convert(data) {
   let name_for_time_width = `P${data[data.length - 1].pid}`;
   converted_data.push([name_for_time_width, "process_position_marker", new Date(0, 0, 0, 0, 0, end_time, 0 ), new Date(0, 0, 0, 0, 0, end_time, 0 )]);
 
-  // Posiconando os DeadLines
+  // Posicionando os DeadLines
   data.forEach((objeto) => {
     if ('arrival_time_dead_line' in objeto && objeto.pid !== "Chaveamento") {
       let name = `P${objeto.pid}`;
+      EDF = true;
 
       if(!dead_line_marker_setted.includes(objeto.pid)) {
 
@@ -49,12 +56,39 @@ export default function Convert(data) {
     let name = `P${objeto.pid}`;
     let start = objeto.start_time;
     let end = objeto.end_time;
-    if (objeto.priority === -1) {
-      converted_data.push([last_process_name, "Chaveamento", new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
-      last_process_name = "";
+    
+    if(!EDF) {
+      if (objeto.priority === -1) {
+        converted_data.push([last_process_name, "Chaveamento", new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
+        last_process_name = "";
+      } else {
+        converted_data.push([name, name, new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
+        last_process_name = name;
+      }
     } else {
-      converted_data.push([name, name, new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
-      last_process_name = name;
+        let dead_line_position = objeto.arrival_time_dead_line + objeto.deadline;
+        if(is_value_in_open_interval(dead_line_position, objeto.start_time, objeto.end_time)) {
+          console.log("Start", objeto.start_time, "Dead", dead_line_position, "End", objeto.end_time)
+          if (objeto.priority === -1) {
+            converted_data.push([last_process_name, "Chaveamento", new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, dead_line_position, 0 )]);
+            converted_data.push([last_process_name, "ChaveamentoComplemento", new Date(0, 0, 0, 0, 0, dead_line_position, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
+            last_process_name = "";
+          } else {
+            converted_data.push([name, name, new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, dead_line_position, 0 )]);
+            converted_data.push([name, "Complemento", new Date(0, 0, 0, 0, 0, dead_line_position, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
+            last_process_name = name;
+          }
+        } else {
+
+          if (objeto.priority === -1) {
+
+            converted_data.push([last_process_name, "Chaveamento", new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
+            last_process_name = "";
+          } else {
+            converted_data.push([name, name, new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
+            last_process_name = name;
+          }
+        }
     }
     
   });

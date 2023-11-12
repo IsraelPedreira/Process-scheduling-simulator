@@ -31,7 +31,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
     let colored = [];
     for (let i = 1; i < chartData.length; i++) {
       if (!colored.includes(chartData[i][1])) {
-        if (chartData[i][1] === "Chaveamento") {
+        if (chartData[i][1] === "Chaveamento" || chartData[i][1] === "ChaveamentoComplemento") {
           newColors.push("#B22222");
         } else if (chartData[i][1] === "process_position_marker") {
           newColors.push("#FFFFFF");
@@ -44,7 +44,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
       }
     }
     setChartColors(newColors);
-    console.log(newColors)
+
   }
 
   function split_setup_processes(chartData) {
@@ -66,11 +66,13 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
     chartData = result.new_chartData
     let setupProcesses = result.setup_processes_array;
 
-    const delay = 1; // delay de atualizacao da animacao
+    let valid_index = 1;
+
+    const delay = 15; // delay de atualizacao da animacao
     const animationStep = 40; // de quanto em quanto a barra vai crescer
     for (let i = 1; i < chartData.length; i++) {
 			// update page table
-			const [_, pageTableCurrent] = pageTableHistory[i];
+			const [_, pageTableCurrent] = pageTableHistory[valid_index];
 			setPageTable(pageTableCurrent);
 			// request animation of process i
       await new Promise((resolve) => requestAnimationFrame(resolve)); // Use requestAnimationFrame for smoother animations
@@ -89,6 +91,10 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
         const newData = [currentData[0], ...setupProcesses, ...currentData.slice(1)];
         setToChartData(newData);
         await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+
+      if(currentProcess[1] !== "Complemento" && currentProcess[1] !== "ChaveamentoComplemento" ) {
+        valid_index++;
       }
     }
   }
