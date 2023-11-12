@@ -14,7 +14,6 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 	const [totalPageFaults, setTotalPageFaults] = useState(0);
 	const [pageTable, setPageTable] = useState(Array(MEMORY_SIZE).fill("x"));
   const [chartColors, setChartColors] = useState([]);
-  const [setupProcesses, setSetupProcesses] = useState([]);
 
   // Options requeridas pelo Google Chart
   let options = {
@@ -36,6 +35,8 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
           newColors.push("#B22222");
         } else if (chartData[i][1] === "process_position_marker") {
           newColors.push("#FFFFFF");
+        } else if (chartData[i][1] === "process_position_dead_line_marker") {
+          newColors.push("#000000");
         } else {
           newColors.push("#008000");
         }
@@ -45,13 +46,27 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
     setChartColors(newColors);
   }
 
+  function split_setup_processes(chartData) {
+    function is_setup_process(array) {
+      return array[1] === "process_position_marker" || array[1] === "process_position_dead_line_marker";
+    }
+    
+    let setup_processes_array = chartData.filter(is_setup_process);
+    let new_chartData = chartData.filter(array => !is_setup_process(array));
+  
+    return {new_chartData, setup_processes_array};
+  }
 
   // Funcao que anima o chart
   async function chart_animation(chartData, pageTableHistory) {
     set_chart_colors(chartData);
-     
+
+    let result = split_setup_processes(chartData);
+    chartData = result.new_chartData
+    let setupProcesses = result.setup_processes_array;
+
     const delay = 1; // delay de atualizacao da animacao
-    const animationStep = 20; // de quanto em quanto a barra vai crescer
+    const animationStep = 40; // de quanto em quanto a barra vai crescer
     for (let i = 1; i < chartData.length; i++) {
 			// update page table
 			const [_, pageTableCurrent] = pageTableHistory[i];
@@ -70,7 +85,9 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
         j += animationStep
       ) {
         currentData[i][3] = new Date(j);
-        setToChartData([...currentData]);
+        const newData = [currentData[0], ...setupProcesses, ...currentData.slice(1)];
+        console.log(newData)
+        setToChartData(newData);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }

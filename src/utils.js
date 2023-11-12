@@ -8,9 +8,9 @@ export default function Convert(data) {
     ]
   ];
   let last_process_name = "";
+  let dead_line_marker_setted = []
   let pids_setted = []
 
-  /*
   // ARMENGUE: colocando todos os processos no chart
   data.forEach((objeto) => {
     let name = `P${objeto.pid}`;
@@ -26,13 +26,24 @@ export default function Convert(data) {
   const end_time = data[data.length - 1].end_time;
   let name = `P${data[data.length - 1].pid}`;
   converted_data.push([name, "process_position_marker", new Date(0, 0, 0, 0, 0, end_time, 0 ), new Date(0, 0, 0, 0, 0, end_time, 0 )]);
-  */
+
+  data.forEach((objeto) => {
+    if ('arrival_time_dead_line' in objeto && objeto.pid !== "Chaveamento") {
+      let name = `P${objeto.pid}`;
+
+      if(!dead_line_marker_setted.includes(objeto.pid)) {
+
+        let dead_line_position = objeto.arrival_time_dead_line + objeto.deadline;
+        converted_data.push([name, "process_position_dead_line_marker", new Date(0, 0, 0, 0, 0, dead_line_position, 0 ), new Date(0, 0, 0, 0, 0, dead_line_position, 0 )]);
+        dead_line_marker_setted.push(objeto.pid);
+      }
+    } 
+  });
 
   data.forEach((objeto) => {
     let name = `P${objeto.pid}`;
     let start = objeto.start_time;
     let end = objeto.end_time;
-
     if (objeto.priority === -1) {
       converted_data.push([last_process_name, "Chaveamento", new Date(0, 0, 0, 0, 0, start, 0 ), new Date(0, 0, 0, 0, 0, end, 0 )]);
       last_process_name = "";
@@ -42,7 +53,8 @@ export default function Convert(data) {
     }
     
   });
-  console.log(converted_data);
+  console.log(converted_data)
   return converted_data;
+  
 }
   

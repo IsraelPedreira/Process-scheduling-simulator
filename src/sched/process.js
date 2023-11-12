@@ -230,7 +230,8 @@ function EDF(process_table, quantum, switch_cost){
 			"duration": delta_time,
 			"priority": process.priority,
 			"deadline": process.deadline,
-			"numPages": process.numPages
+			"numPages": process.numPages,
+			"arrival_time_dead_line": process.arrival_time
 		})
 		// Run process
 		curr_time += delta_time
