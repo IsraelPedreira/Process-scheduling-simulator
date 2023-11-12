@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ChartComponent } from "./Chart";
 import { FIFO, SJF, EDF, RoundRobin as RR } from "./sched/process";
 import { FIFO as FIFO_MEM } from "./pagination/FIFO";
+import { LRU as LRU_MEM } from "./pagination/LRU";
 import { calculateTurnaround } from "./sched/turnaround";
 import Convert from "./utils";
 
@@ -68,7 +69,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 
     let valid_index = 1;
 
-    const delay = 15; // delay de atualizacao da animacao
+    const delay = 15; // delay de atualizacao da animacao // FIXME change back to 1
     const animationStep = 40; // de quanto em quanto a barra vai crescer
     for (let i = 1; i < chartData.length; i++) {
 			// update page table
@@ -97,30 +98,42 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
         valid_index++;
       }
     }
+		// end of animation
+		document.getElementsByClassName("status-text")[0].innerHTML = "Status: finalizado";
   }
 
 	// runs only once
   const useEffectFactory = (schedMode, memMode) => {
     return useEffect(() => {
 			let schedData = null;
-			if (schedMode == "FIFO") {
-				schedData = FIFO(data_from_menu);
-			} else if (schedMode == "SJF") {
-				schedData = SJF(data_from_menu);
-			} else if (schedMode == "EDF") {
-				schedData = EDF(data_from_menu, quantum, switchCost);
-			} else if (schedMode == "RR") {
-				schedData = RR(data_from_menu, quantum, switchCost);
+			switch (schedMode) {
+        case "FIFO":
+				  schedData = FIFO(data_from_menu);
+          break;
+			  case "SJF":
+				  schedData = SJF(data_from_menu);
+          break;
+			  case "EDF":
+				  schedData = EDF(data_from_menu, quantum, switchCost);
+          break;
+			  case "RR":
+				  schedData = RR(data_from_menu, quantum, switchCost);
+          break;
+        default:
+          throw Error("Unreachable");
 			}
-			let tempPageTable = Array(MEMORY_SIZE).fill("x");
+			let tempPageTable = Array(MEMORY_SIZE).fill({"page": "x", "pid": "x"});
 			let pageTableHistory = [];
-			if (memMode == "FIFO") {
-				pageTableHistory = FIFO_MEM(tempPageTable, (newPageTable) => newPageTable, schedData);
-			} else if (memMode == "LRU") {
-				// TODO implement LRU
+			switch (memMode) {
+				case "FIFO":
+				  pageTableHistory = FIFO_MEM(tempPageTable, schedData);
+					break;
+			  case "LRU":
+					pageTableHistory = LRU_MEM(tempPageTable, schedData);
+					break;
+				default:
+					throw Error("Unreachable");
 			}
-			// NOTE : so that it aligns with the chart, since it needs an extra entry for labels
-			pageTableHistory.unshift([false, Array(MEMORY_SIZE).fill("x")])
 
 			// calculate average turnaround
 			const final_turnaround = calculateTurnaround(data_from_menu, schedData);

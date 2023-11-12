@@ -1,53 +1,68 @@
 import Denque from 'denque';
 
-export function FIFO(pageTable, setPageTable, processTable, asState=false){
+// processTable.pages is a list of pageNumbers, with each number n
+// satisfying 0 <= n < MEMORY_SIZE
+
+// pageTable is an array of objects {page: pageNumber, pid: owner_pid}
+//
+// each element of pageTableHistory: [pageFault?, pageTableCurr]
+
+function findPage(pageTable, pageNum){
+	for (let i = 0; i < pageTable.length; i++){
+		const page = pageTable[i]["page"];
+		if (page == pageNum) return i;
+	}
+	return -1
+}
+
+export function FIFO(pageTable, processTable){
 	const pageQueue	= new Denque();
 
 	const pageTableHistory = []
+	// NOTE : so that it aligns with the chart, since it needs an extra entry for labels
+	pageTableHistory.push([false, [...pageTable]])
 	processTable.forEach((process) => {
-		let pageFault = false;
+		let isPageFault = false;
 		if (process.pid == "Chaveamento") {
+			// state stays the same
 			pageTableHistory.push([false, [...pageTable]])
 			return;
 		}
-		const needed = process.numPages;
-
 		// occupy all free pages
-		const free = pageTable.filter((pid) => pid == "x").length; 
-		const loaded_first = pageTable.filter((pid) => pid == process.pid).length;
+		let free = pageTable.filter((entry) => entry["page"] == "x").length; 
 		// there are free pages and not all needed pages are loaded
-		if (free > 0 && loaded_first < needed){
-			for (let i = 0; i < Math.min(needed - loaded_first, free); i++){
-				const idx = pageTable.findIndex((pid) => pid == "x");	
-				const _pageTable = [...pageTable];
-				_pageTable[idx] = process.pid;
-				pageQueue.push(idx);
-				if (asState) {
-					setPageTable(_pageTable);
-				} else {
-					pageTable = setPageTable(_pageTable);
-				}
+		for (let i = 0; i < process.pages.length && free > 0; i++){
+			const find_idx = findPage(pageTable, process.pages[i]);
+			if (find_idx != -1){
+				// page is already loaded
+				continue;
+			} else {
+				isPageFault = true;
+				const replace_idx = pageTable.findIndex((entry) => entry["page"] == "x");
+				// update
+				pageTable[replace_idx] = {"page": process.pages[i], "pid": process.pid};
+				// push to queue
+				pageQueue.push(process.pages[i]);
+				--free
 			}
 		}
-		// check if, after grabbing free pages, all needed pages are loaded
-		const loaded_second = pageTable.filter((pid) => pid == process.pid).length;
-		// there are still pages to be loaded, and there are no free pages
-		if (needed > loaded_second) {
-			// do FIFO
-			for (let i = 0; i < needed - loaded_second; i++){
-				const idx = pageQueue.shift();
-				const _pageTable = [...pageTable];
-				_pageTable[idx] = process.pid;
-				pageQueue.push(idx);
-				if (asState) {
-					setPageTable(_pageTable);
-				} else {
-					pageTable = setPageTable(_pageTable);
-				}
+
+		// replace pages as needed
+		for (let i = 0; i < process.pages.length; i++){
+			const find_idx = findPage(pageTable, process.pages[i]);
+			if (find_idx != -1){
+				// page is already loaded
+				continue;
+			} else {
+				isPageFault = true;
+				const replace_idx = findPage(pageTable, pageQueue.shift());
+				// update
+				pageTable[replace_idx] = {"page": process.pages[i], "pid": process.pid};
+				// push to queue
+				pageQueue.push(process.pages[i]);
 			}
-			pageFault = true;
 		}
-		pageTableHistory.push([pageFault, [...pageTable]])
+		pageTableHistory.push([isPageFault, [...pageTable]]);
 	})
 	return pageTableHistory;
 }

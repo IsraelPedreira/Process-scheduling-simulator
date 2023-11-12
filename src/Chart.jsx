@@ -43,9 +43,10 @@ export const ChartComponent = ({ data, pageTable, options, turnaround, pageFault
   
   return (
     <>
-      <p className="turnaround-text">Turnaround: {turnaround}</p>
-			<p className="page-faults-text">Total de page faults: {pageFaults}</p>
-
+      <div className="calc-div">
+        <p className="turnaround-text">Turnaround: {turnaround}</p>
+			  <p className="page-faults-text">Total de page faults: {pageFaults}</p>
+      </div>
       <Chart
         chartType="Timeline"
         data={data}
@@ -53,6 +54,9 @@ export const ChartComponent = ({ data, pageTable, options, turnaround, pageFault
         height="600px"
         options={options}
       />
+			<div className="status-div">
+				<p className="status-text">Status: executando...</p>
+			</div>
 			<MemTable pageTable={pageTable}/>
     </>
   );

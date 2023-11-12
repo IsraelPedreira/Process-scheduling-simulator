@@ -62,26 +62,34 @@
   filter: brightness(80%);
 }
 
-.exit-buttons {
+.sched-exit-buttons {
 	display: flex;
 	justify-content: center;
   align-items: center;
 	/* separate the buttons horizontally only */
 }
 
-.exit-buttons > * {
+.sched-exit-buttons > * {
   margin-right: 10px;
 }
 
 /* Style for the delete button */
 .clear-button {
-	/* align the button to the right */
-	position: relative;
-	left: 75%;
+	/* align the button to the left */
+	float: left;
 }
 .clear-button button {
 	background-color: #C70039;
 }
+
+.submit-button {
+	/* align the button to the right */
+	float: right;
+}
+.submit-button button {
+	background-color: #00FF00;
+}
+
 
 /* Style for quantum and switch cost fields */
 .quantumEntry input {

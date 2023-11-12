@@ -2,14 +2,14 @@ import React, { useState, useEffect, Component } from 'react';
 
 const MAX_PROCESSES = 12
 
-function AddProcess(process_table, pid, arrival_time, duration, priority, deadline, numPages){
+function AddProcess(process_table, pid, arrival_time, duration, priority, deadline, pages){
 	process_table.push({
 		"pid": pid,
 		"arrival_time": arrival_time,
 		"duration": duration,
 		"priority": priority,
 		"deadline": deadline,
-		"numPages": numPages
+		"pages": pages
 	})
 	return process_table
 }
@@ -21,7 +21,7 @@ export function ProcessForm(props) {
     duration: '',
     priority: '',
     deadline: '',
-		numPages: '',
+		pages: '',
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -36,6 +36,14 @@ export function ProcessForm(props) {
       [name]: value,
     });
   }
+
+	const handlePageList = (event) => {
+		const { name, value } = event.target;
+		setFormData({
+			...formData,
+			[name]: value.split(",")
+		});
+	}
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -55,13 +63,18 @@ export function ProcessForm(props) {
 					alert("Erro: PIDs duplicados");
 					return;
 				}
-				props.updateProcessTable(parsedContent);
+				props.updateProcessTable(parsedContent["process_table"]);
 				props.setQuantum(parsedContent["quantum"]);
 				props.setSwitchCost(parsedContent["switch_cost"]);
+				props.setSchedMode(parsedContent["sched_mode"]);
+				props.setMemMode(parsedContent["mem_mode"]);
+				console.log(props.processTable, props.quantum, props.switchCost, props.schedMode, props.memMode)
 				// cache it!
 				sessionStorage.setItem("process_table", JSON.stringify(parsedContent["process_table"]));
 				sessionStorage.setItem("quantum", parsedContent["quantum"]);
 				sessionStorage.setItem("switch_cost", parsedContent["switch_cost"]);
+				sessionStorage.setItem("sched_mode", parsedContent["sched_mode"]);
+				sessionStorage.setItem("mem_mode", parsedContent["mem_mode"]);
 			} catch (error) {
 				alert("Formato inválido: forneça um arquivo JSON válido.")
 				return;
@@ -99,7 +112,7 @@ export function ProcessForm(props) {
 			duration: '',
 			priority: '',
 			deadline: '',
-      numPages: ''
+      pages: ''
 		});
   }
 
@@ -113,34 +126,52 @@ export function ProcessForm(props) {
 		sessionStorage.setItem("switch_cost", tempSwitchCost);
 	}
 
-  const handleOnSubmitFactory = (schedMode) => {
-		const handleOnSubmitMode = (event) => {
-			event.preventDefault();
-			console.log('Form data submitted:', props.processTable);
-			if (props.processTable.length == 0){
-				alert("Erro: informe pelo menos um processo");
-			} else if ((!props.quantum || !props.switchCost) && (mode == "EDF" || mode == "RR")) {
-				alert(`Erro: para visualizar o algoritmo de escalonamento ${mode} informe o quantum e a sobrecarga de chaveamento.`);	
-			} else {
-				// Serialize the data as a query parameter
-				const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
-			
-				// Navigate to the new HTML page with the data as a query parameter
-				// TODO MAKE MEMMODE CUSTOMIZABLE
-				window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&schedMode=${schedMode}&memMode=FIFO&data=${dataQueryParam}`;
-			}
+	const handleSetSchedMode = (event) => {
+		event.preventDefault();
+		// id of buttons informs mode!
+		const mode = event.target.value;
+		props.setSchedMode(mode);
+		sessionStorage.setItem("sched_mode", mode);
+	}
+	
+	const handleSetMemMode = (event) => {
+		event.preventDefault();
+		// id of buttons informs mode!
+		const mode = event.target.value;
+		props.setMemMode(mode);
+		sessionStorage.setItem("mem_mode", mode);
+	}
+
+	const handleOnSubmit = (event) => {
+		event.preventDefault();
+		console.log('Form data submitted:', props.processTable);
+		if (props.processTable.length == 0){
+			alert("Erro: informe pelo menos um processo");
+		} else if ((!props.quantum || !props.switchCost) && (props.schedMode == "EDF" || props.schedMode == "RR")) {
+			alert(`Erro: para visualizar o algoritmo de escalonamento ${mode} informe o quantum e a sobrecarga de chaveamento.`);	
+		} else {
+			// Serialize the data as a query parameter
+			const dataQueryParam = encodeURIComponent(JSON.stringify(props.processTable));
+		
+			// Navigate to the new HTML page with the data as a query parameter
+			// TODO MAKE MEMMODE CUSTOMIZABLE
+			window.location.href = `gantt.html?quantum=${props.quantum}&switchCost=${props.switchCost}&schedMode=${props.schedMode}&memMode=${props.memMode}&data=${dataQueryParam}`;
 		}
-		return handleOnSubmitMode 
-  }
+	}
+
   const handleOnClear = (event) => {
     event.preventDefault();
 
     props.updateProcessTable([]);
 		props.setQuantum("");
 		props.setSwitchCost("");
-    sessionStorage.removeItem("process_table")
-    sessionStorage.removeItem("quantum")
-    sessionStorage.removeItem("switch_cost")
+		props.setSchedMode("FIFO");
+		props.setMemMode("FIFO");
+		sessionStorage.setItem("process_table", JSON.stringify([]));
+		sessionStorage.setItem("quantum", "");
+		sessionStorage.setItem("switch_cost", "");
+		sessionStorage.setItem("sched_mode", "");
+		sessionStorage.setItem("mem_mode", "");
   }
 
   return (
@@ -199,13 +230,13 @@ export function ProcessForm(props) {
             />
           </div>
           <div>
-            <label htmlFor="numPages">Número de páginas utilizadas:</label>
+            <label htmlFor="pages">Páginas utilizadas (lista separada por vírgulas, sem espaços):</label>
             <input
               type="text"
-              id="numPages"
-              name="numPages"
-              value={formData.numPages}
-              onChange={handleChange}
+              id="pages"
+              name="pages"
+              value={formData.pages}
+              onChange={handlePageList}
             />
           </div>
           <button onClick={handleAddProcess} className='formButton' type="submit">Adicionar</button>
@@ -235,16 +266,27 @@ export function ProcessForm(props) {
 				</div>
         <div className='separator'></div>
         <div className="exit-buttons">
-          <button onClick={handleOnSubmitFactory("FIFO")} className='formButton' type="submit">FIFO</button>
-          <button onClick={handleOnSubmitFactory("SJF")} className='formButton'type="submit">SJF</button>
-          <button onClick={handleOnSubmitFactory("EDF")} className='formButton' type="submit">EDF</button>
-          <button onClick={handleOnSubmitFactory("RR")} className='formButton'type="submit">RR</button>
+					<h2 className="sched-options-text">Algoritmos de Escalonamento</h2>
+          <button onClick={handleSetSchedMode} className='schedButton' value="FIFO" id="FIFO">FIFO</button>
+          <button onClick={handleSetSchedMode} className='schedButton' value="SJF" id="SJF">SJF</button>
+          <button onClick={handleSetSchedMode} className='schedButton' value="EDF" id="EDF">EDF</button>
+          <button onClick={handleSetSchedMode} className='schedButton' value="RR" id="RR">RR</button>
+        </div>
+        <div className="exit-buttons">
+					<h2 className="mem-options-text">Algoritmos de Paginação</h2>
+          <button onClick={handleSetMemMode} className='memButton' value="FIFO" id="FIFO">FIFO</button>
+          <button onClick={handleSetMemMode} className='memButton' value="LRU" id="LRU">LRU</button>
         </div>
         <div className="file-submit">
           <input type="file" accept=".json" onChange={handleFileChange}></input>
         </div>
-				<div className="clear-button">
-					<button onClick={handleOnClear} type="submit">Limpar</button>
+					<div style={{overflow: "hidden"}}>
+						<div className="clear-button">
+							<button onClick={handleOnClear}>Limpar</button>
+						</div>
+						<div className="submit-button">
+							<button onClick={handleOnSubmit}>Iniciar</button>
+						</div>
 				</div>
       </form>
     </div>
