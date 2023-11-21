@@ -69,13 +69,18 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
     let setupProcesses = result.setup_processes_array;
 
     let valid_index = 1;
+		let currPageFaults = 0;
 
     const delay = 15; // delay de atualizacao da animacao // FIXME change back to 1
     const animationStep = 40; // de quanto em quanto a barra vai crescer
     for (let i = 1; i < chartData.length; i++) {
 			// update page table
-			const [_, pageTableCurrent] = pageTableHistory[valid_index];
+			const [hasPageFault, pageTableCurrent] = pageTableHistory[valid_index];
 			setPageTable(pageTableCurrent);
+			if (hasPageFault){
+				++currPageFaults;
+				setTotalPageFaults(currPageFaults);
+			}
 			// request animation of process i
       await new Promise((resolve) => requestAnimationFrame(resolve)); // Use requestAnimationFrame for smoother animations
 
@@ -141,8 +146,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
       setTotalTurnaround(final_turnaround.toFixed(2));
 
 			// calculate total page faults
-			const final_page_faults = pageTableHistory.filter(([status, _]) => status).length;
-			setTotalPageFaults(final_page_faults);
+			// const final_page_faults = pageTableHistory.filter(([status, _]) => status).length;
       
       let chartData = Convert(schedData);
       chart_animation(chartData, pageTableHistory);
