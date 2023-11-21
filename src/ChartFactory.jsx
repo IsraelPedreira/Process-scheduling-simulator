@@ -15,6 +15,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 	const [totalPageFaults, setTotalPageFaults] = useState(0);
 	const [pageTable, setPageTable] = useState(Array(MEMORY_SIZE).fill("x"));
   const [chartColors, setChartColors] = useState([]);
+	const [currProcessPages, setCurrProcessPages] = useState([]);
 
   // Options requeridas pelo Google Chart
   let options = {
@@ -61,7 +62,7 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
   }
 
   // Funcao que anima o chart
-  async function chart_animation(chartData, pageTableHistory) {
+  async function chart_animation(chartData, pageTableHistory, processTable) {
     set_chart_colors(chartData);
 
     let result = split_setup_processes(chartData);
@@ -77,6 +78,10 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 			// update page table
 			const [hasPageFault, pageTableCurrent] = pageTableHistory[valid_index];
 			setPageTable(pageTableCurrent);
+			// update active pages (linked to curr process)
+			const process = processTable[valid_index - 1];
+			setCurrProcessPages(process.pages);
+			// update page faults
 			if (hasPageFault){
 				++currPageFaults;
 				setTotalPageFaults(currPageFaults);
@@ -149,13 +154,13 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
 			// const final_page_faults = pageTableHistory.filter(([status, _]) => status).length;
       
       let chartData = Convert(schedData);
-      chart_animation(chartData, pageTableHistory);
+      chart_animation(chartData, pageTableHistory, schedData);
     }, []);
   }
 
 	useEffectFactory(schedMode, memMode)
 
-  return <ChartComponent data={to_chart_data} pageTable={pageTable} options={options} turnaround={totalTurnaround} pageFaults={totalPageFaults}/>;
+  return <ChartComponent data={to_chart_data} pageTable={pageTable} currProcessPages={currProcessPages} options={options} turnaround={totalTurnaround} pageFaults={totalPageFaults}/>;
 }
 
 export default ChartFactory;

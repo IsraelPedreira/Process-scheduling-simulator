@@ -3,7 +3,7 @@ import { Chart } from "react-google-charts";
 import MemTable from "./MemTable"
 import "../styles/gantt.css"
 
-export const ChartComponent = ({ data, pageTable, options, turnaround, pageFaults }) => {
+export const ChartComponent = ({ data, pageTable, currProcessPages, options, turnaround, pageFaults }) => {
   
   useLayoutEffect(() => {
     // Obtém todos os elementos <text> no documento
@@ -57,7 +57,7 @@ export const ChartComponent = ({ data, pageTable, options, turnaround, pageFault
 			<div className="status-div">
 				<p className="status-text">Status: executando...</p>
 			</div>
-			<MemTable pageTable={pageTable}/>
+			<MemTable pageTable={pageTable} currProcessPages={currProcessPages}/>
     </>
   );
 };

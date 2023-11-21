@@ -71,7 +71,17 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.ram-list > * {
+.ram-cell-active {
+    list-style: None;
+    font-size: 25px;
+    padding: 2px;
+    max-width: 50px;
+    max-height: 50px;
+    min-height: 30px;
+    text-align: center;
+    background-color: green;
+}
+.ram-cell-inactive {
     list-style: None;
     font-size: 25px;
     padding: 2px;
