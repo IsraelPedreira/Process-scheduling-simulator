@@ -30,11 +30,11 @@ function argMin(arr){
 // Removes page with last access time furthest in the past
 export function LRU(pageTable, processTable){
 	const pageTableHistory = [];
-	pageTableHistory.push([false, [...pageTable]]);
+	pageTableHistory.push([0, [...pageTable]]);
 	const accessHistory = Array(pageTable.length).fill(-1);
 
 	processTable.forEach((process, iter_idx) => {
-		let pageFault = false;
+		let pageFaultCount = 0;
 
 		// free pages are just pages that were acessed in time -1 (ie before time 0)
 		// so there is no need to handle them separately
@@ -46,10 +46,10 @@ export function LRU(pageTable, processTable){
 				const replace_idx = argMin(accessHistory)
 				pageTable[replace_idx] = {"page": process.pages[i], "pid": process.pid} 
 				accessHistory[replace_idx] = iter_idx
-				pageFault = true;
+				++pageFaultCount;
 			}
 		}
-		pageTableHistory.push([pageFault, [...pageTable]])
+		pageTableHistory.push([pageFaultCount, [...pageTable]])
 	})
 	return pageTableHistory
 }

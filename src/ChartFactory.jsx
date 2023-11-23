@@ -76,14 +76,14 @@ export function ChartFactory({ data_from_menu, schedMode, memMode, quantum, swit
     const animationStep = 40; // de quanto em quanto a barra vai crescer
     for (let i = 1; i < chartData.length; i++) {
 			// update page table
-			const [hasPageFault, pageTableCurrent] = pageTableHistory[valid_index];
+			const [pageFaultCount, pageTableCurrent] = pageTableHistory[valid_index];
 			setPageTable(pageTableCurrent);
 			// update active pages (linked to curr process)
 			const process = processTable[valid_index - 1];
 			setCurrProcessPages(process.pages);
 			// update page faults
-			if (hasPageFault){
-				++currPageFaults;
+			if (pageFaultCount > 0){
+				currPageFaults += pageFaultCount;
 				setTotalPageFaults(currPageFaults);
 			}
 			// request animation of process i

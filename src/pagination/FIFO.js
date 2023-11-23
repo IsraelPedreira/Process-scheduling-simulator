@@ -20,9 +20,9 @@ export function FIFO(pageTable, processTable){
 
 	const pageTableHistory = []
 	// NOTE : so that it aligns with the chart, since it needs an extra entry for labels
-	pageTableHistory.push([false, [...pageTable]])
+	pageTableHistory.push([0, [...pageTable]])
 	processTable.forEach((process) => {
-		let isPageFault = false;
+		let pageFaultCount = 0;
 		if (process.pid == "Chaveamento") {
 			// state stays the same
 			pageTableHistory.push([false, [...pageTable]])
@@ -37,7 +37,7 @@ export function FIFO(pageTable, processTable){
 				// page is already loaded
 				continue;
 			} else {
-				isPageFault = true;
+				++pageFaultCount;
 				const replace_idx = pageTable.findIndex((entry) => entry["page"] == "x");
 				// update
 				pageTable[replace_idx] = {"page": process.pages[i], "pid": process.pid};
@@ -54,7 +54,7 @@ export function FIFO(pageTable, processTable){
 				// page is already loaded
 				continue;
 			} else {
-				isPageFault = true;
+				++pageFaultCount;
 				const replace_idx = findPage(pageTable, pageQueue.shift());
 				// update
 				pageTable[replace_idx] = {"page": process.pages[i], "pid": process.pid};
@@ -62,7 +62,7 @@ export function FIFO(pageTable, processTable){
 				pageQueue.push(process.pages[i]);
 			}
 		}
-		pageTableHistory.push([isPageFault, [...pageTable]]);
+		pageTableHistory.push([pageFaultCount, [...pageTable]]);
 	})
 	return pageTableHistory;
 }
