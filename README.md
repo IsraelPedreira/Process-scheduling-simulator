@@ -15,7 +15,7 @@ Execute o comando
 ```bash
 npm i
 ```
-### 2 - Executar o servidord 
+### 2 - Executar o servidor
 Para iniciar o servidor de desenvolvimento, execute o seguinte comando:
 
 ```bash
